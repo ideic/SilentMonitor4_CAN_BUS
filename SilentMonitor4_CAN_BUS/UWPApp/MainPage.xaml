@@ -51,17 +51,11 @@
                         <Flyout Opened="Flyout_Opened">
                             <StackPanel>
                                 <StackPanel BorderThickness="1" BorderBrush="LightGray" >
-                                   <local:ConnectionStateLight ConnectionState="{x:Bind ConnectionState}"/>
+                                    <local:ConnectionStateLight ConnectionState="{x:Bind ConnectionState}"/>
                                 </StackPanel>
-                                <Border BorderBrush="AntiqueWhite" BorderThickness="1">
-                                    <ListView x:Name="bluetoothDevicesListView" Visibility="Visible"
-                                      ItemTemplate="{StaticResource ResultsListViewTemplate}"
-                                      ItemsSource="{x:Bind ConnectionState.AvailableBluetoothDeviceCollection}"
-                                      
-                                      DoubleTapped="bluetoothDevicesListView_DoubleTapped"
-                                      MaxHeight="450"/>
-                                </Border>
-                                <TextBlock Name="bluetoothConnectionMessage" Visibility="Collapsed"/>
+                                <StackPanel BorderThickness="1" BorderBrush="LightGray">
+                                    <TextBlock Name="bluetoothConnectionMessage" Text="{x:Bind ConnectionState.LastError, Mode=OneWay}"/>
+                                </StackPanel>
                                 <StackPanel BorderThickness="1" BorderBrush="LightGray">
                                 <TextBlock Text="CAN Wifi SSID:"/>
                                 <AutoSuggestBox 
@@ -102,6 +96,7 @@
         <Grid Grid.Row="2">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
+                    <ColumnDefinition/>
                     <ColumnDefinition Width="110"/>
                 </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
@@ -109,7 +104,8 @@
                 <RowDefinition />
             </Grid.RowDefinitions>
             <local:ConnectionStateLight Grid.Column="0" Grid.RowSpan="2" ConnectionState="{x:Bind ConnectionState, Mode=OneWay}" />
-            <Slider Grid.Column="1" Grid.RowSpan="2" VerticalAlignment="Center" Margin="0,0,10,0" x:Name="ZoomSlider" Orientation="Horizontal" ValueChanged="ZoomSlider_ValueChanged" Maximum="1000" Minimum="10" Value="100" StepFrequency="100" SmallChange="10"/>
+            <TextBlock Name="errorMessage" Grid.Column="1" Grid.RowSpan="2" TextWrapping="Wrap" Text="{x:Bind ConnectionState.LastError, Mode=OneWay}"/>
+            <Slider Grid.Column="2" Grid.RowSpan="2" VerticalAlignment="Center" Margin="0,0,10,0" x:Name="ZoomSlider" Orientation="Horizontal" ValueChanged="ZoomSlider_ValueChanged" Maximum="1000" Minimum="10" Value="100" StepFrequency="100" SmallChange="10"/>
         </Grid>
     </Grid>
 

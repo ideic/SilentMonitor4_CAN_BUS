@@ -8,6 +8,9 @@
 
 #include <vector>
 #include "Logger.h"
+#include <thread>
+#include <chrono>
+using namespace std::chrono_literals;
 
 using namespace std::string_literals;
 
@@ -39,7 +42,7 @@ void BluetoothServer::Stop()
 
 void BluetoothServer::Run()
 {
-    RegisterService();
+    //RegisterService();
     struct sockaddr_rc loc_addr = { 0 };
     // allocate socket
     _socketInfo->_socketId = socket(AF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM);
@@ -61,27 +64,20 @@ void BluetoothServer::Run()
 
     // put socket into listening mode
     listen(_socketInfo->_socketId, 1);
-
+    Connect();
+    
     while (!_stopped) {
-        struct sockaddr_rc rem_addr = { 0 };
-        socklen_t opt = sizeof(rem_addr);
-
-        // accept one connection
-        _socketInfo->_client = accept(_socketInfo->_socketId, (struct sockaddr*)&rem_addr, &opt);
-
         std::vector<uint8_t> buf(1024, 0);
-        int bytes_read;
-
-        ba2str(&rem_addr.rc_bdaddr, (char*)buf.data());
-
-        Logger::Info("Accepted connection from "s + std::string((char*)buf.data()) + "\n"s);
-
-        buf.clear();
-
         // read data from the client
-        bytes_read = read(_socketInfo->_client, buf.data(), buf.size());
+        auto bytes_read = read(_socketInfo->_client, buf.data(), buf.size());
         if (bytes_read > 0) {
             _receivedCommands.push(std::string(begin(buf), end(buf)));
+        }
+        else if (bytes_read == 0) {
+            std::this_thread::sleep_for(100ms);
+        }
+        else {
+            Connect();
         }
     }
 }
@@ -92,94 +88,19 @@ void BluetoothServer::SendCommand(const std::string & command){
     }
 }
 
-void BluetoothServer::RegisterService() {
+void BluetoothServer::Connect(){
+    struct sockaddr_rc rem_addr = { 0 };
+    socklen_t opt = sizeof(rem_addr);
 
-    sdp_record_t* record = sdp_record_alloc();
+    // accept one connection
+    _socketInfo->_client = accept(_socketInfo->_socketId, (struct sockaddr*)&rem_addr, &opt);
 
-    // set the general service ID
-    uuid_t svc_uuid;
-    uint32_t service_uuid_int[] = { 0, 0, 0, 0xABCD };
-    //sdp_uuid128_create(&svc_uuid, &service_uuid_int);
-    sdp_uuid16_create(&svc_uuid, 0x1101);
-    sdp_set_service_id(record, svc_uuid);
-
-    /* set the service class */
-    uuid_t svc_class_uuid;
-    sdp_uuid16_create(&svc_class_uuid, SERIAL_PORT_SVCLASS_ID);
-    sdp_list_t* svc_class_list = sdp_list_append(0, &svc_class_uuid);
-    sdp_set_service_classes(record, svc_class_list);
-
-    /* set the Bluetooth profile information */
-    sdp_profile_desc_t profile;
-    sdp_uuid16_create(&profile.uuid, SERIAL_PORT_PROFILE_ID);
-    profile.version = 0x0100;
-    sdp_list_t *profile_list = sdp_list_append(0, &profile);
-    sdp_set_profile_descs(record, profile_list);
-
-    // make the service record publicly browsable
-    uuid_t root_uuid;
-    sdp_list_t* root_list{};
-    sdp_uuid16_create(&root_uuid, PUBLIC_BROWSE_GROUP);
-    root_list = sdp_list_append(0, &root_uuid);
-    sdp_set_browse_groups(record, root_list);
-
-    //Record state change it any kind of modification
-    sdp_set_record_state(record, 3);
-
-    //Service availablity
-    sdp_set_service_avail(record, 0xFF);
-
-
-    sdp_list_t* proto_list{};
-
-    // set l2cap information
-    uuid_t l2cap_uuid;
-    sdp_uuid16_create(&l2cap_uuid, L2CAP_UUID);
-    sdp_list_t* l2cap_list = sdp_list_append(0, &l2cap_uuid);
-    proto_list = sdp_list_append(0, l2cap_list);
-
-    // set rfcomm information
-    uuid_t  rfcomm_uuid;
-    sdp_list_t* rfcomm_list{};
-    sdp_data_t* channel{};
-
-    uint8_t rfcomm_channel = 1;
-    sdp_uuid16_create(&rfcomm_uuid, RFCOMM_UUID);
-    channel = sdp_data_alloc(SDP_UINT8, &rfcomm_channel);
-    rfcomm_list = sdp_list_append(0, &rfcomm_uuid);
-    sdp_list_append(rfcomm_list, channel);
-    //proto_list = sdp_list_append(0, rfcomm_list);
-    sdp_list_append(proto_list, rfcomm_list);
-
-    // attach protocol information to service record
-    sdp_list_t* access_proto_list{};
-    access_proto_list = sdp_list_append(0, proto_list);
-    sdp_set_access_protos(record, access_proto_list);
-
-    // set the name, provider, and description
-    std::string serviceName = "CAN-BUS Sniffer Device";
-    std::string serviceDesc = "CAN-BUS sniffer, log all data from CAN-BUS";
-    std::string serviceProv = "CAN-BUS Sniffer";
-    sdp_set_info_attr(record, serviceName.c_str(), serviceProv.c_str(), serviceDesc.c_str());
-
-    // connect to the local SDP server, register the service record, and 
-    bdaddr_t any = { };
-    bdaddr_t local{ {0, 0, 0, 0xff, 0xff, 0xff} };
-    auto session = sdp_connect(&any, &local, SDP_RETRY_IF_BUSY);
-    if (!session) {
-        throw std::runtime_error("Bluetoot sdp connect failed"s + std::string(strerror(errno)));
-    }
-    auto err = sdp_record_register(session, record, SDP_RECORD_PERSIST);
-    if (err < 0) {
-        throw std::runtime_error("Bluetoot sdp_record_register failed:"s + std::string(strerror(errno)));
-    }
-
-     // cleanup
-    sdp_data_free(channel);
-    //sdp_list_free(l2cap_list, 0);
-    sdp_list_free(rfcomm_list, 0);
-    sdp_list_free(root_list, 0);
-    sdp_list_free(access_proto_list, 0);
-}
+    std::vector<uint8_t> buf(1024, 0);
  
+    ba2str(&rem_addr.rc_bdaddr, (char*)buf.data());
 
+    Logger::Info("Accepted connection from "s + std::string((char*)buf.data()) + "\n"s);
+
+    buf.clear();
+    buf.resize(1024);
+}

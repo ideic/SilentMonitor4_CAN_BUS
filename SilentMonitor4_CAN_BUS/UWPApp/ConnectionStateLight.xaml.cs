@@ -24,6 +24,10 @@ namespace UWPApp
 
         public event PropertyChangedEventHandler PropertyChanged;
 
+        public static readonly DependencyProperty PartiallyConnectedProperty = DependencyProperty.Register("PartiallyConnected", typeof(bool), typeof(ConnectionStateLight), null);
+        public static readonly DependencyProperty ConnectedProperty = DependencyProperty.Register("Connected", typeof(bool), typeof(ConnectionStateLight), null);
+        public static readonly DependencyProperty NotConnectedProperty = DependencyProperty.Register("NotConnected", typeof(bool), typeof(ConnectionStateLight), null);
+
         public ConnectionStateLight()
         {
             this.InitializeComponent();
@@ -35,28 +39,38 @@ namespace UWPApp
             set
             {
                 _connectionState = value;
+
+                SetValue(ConnectedProperty, _connectionState == null ? false : _connectionState.SilentMonitorConnected && _connectionState.CANBusConnected);
+                SetValue(NotConnectedProperty, _connectionState == null ? true : !_connectionState.SilentMonitorConnected && !_connectionState.CANBusConnected);
+                SetValue(PartiallyConnectedProperty, _connectionState == null ? false : (!Connected && !NotConnected && _connectionState.CANBusConnected));
+               
                 _connectionState.PropertyChanged += (s, e) =>
                 {
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("PartiallyConnected"));
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Connected"));
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("NotConnected"));
+                    //PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("PartiallyConnected"));
+                    //PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Connected"));
+                    //PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("NotConnected"));
+                    SetValue(ConnectedProperty, _connectionState == null ? false : _connectionState.SilentMonitorConnected && _connectionState.CANBusConnected);
+                    SetValue(NotConnectedProperty, _connectionState == null ? true : !_connectionState.SilentMonitorConnected && !_connectionState.CANBusConnected);
+                    SetValue(PartiallyConnectedProperty, _connectionState == null ? false :
+                        (!Connected && !NotConnected && _connectionState.CANBusConnected));
+
 
                 };
             }
         }
         public bool PartiallyConnected
         {
-            get { return _connectionState == null ? false : _connectionState.SilentMonitorConnected; }
+            get { return (bool) GetValue(PartiallyConnectedProperty); }
         }
 
         public bool Connected
         {
-            get { return _connectionState == null ? false : _connectionState.SilentMonitorConnected && _connectionState.CANBusConnected; }
+            get { return (bool)GetValue(ConnectedProperty); }
         }
 
         public bool NotConnected
         {
-            get { return _connectionState == null ? true : !_connectionState.SilentMonitorConnected && !_connectionState.CANBusConnected; }
+            get { return (bool)GetValue(NotConnectedProperty); }
         }
     }
 }

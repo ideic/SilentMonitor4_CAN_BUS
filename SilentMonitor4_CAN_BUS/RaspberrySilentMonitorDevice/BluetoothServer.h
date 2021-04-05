@@ -8,7 +8,7 @@ struct BluetoothServer
 	class SocketInfo;
 	std::shared_ptr<SocketInfo> _socketInfo;
 	std::atomic_bool _stopped{ false };
-	void RegisterService();
+	void Connect();
 public:
 	BluetoothServer(std::string address);
 	~BluetoothServer();

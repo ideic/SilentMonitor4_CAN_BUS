@@ -6,23 +6,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Storage;
+using Windows.UI.Core;
 
 namespace UWPApp.ViewModels
 {
     public class ConnectionStateViewModel : INotifyPropertyChanged
     {
-        private static ConnectionStateViewModel _instance = new ConnectionStateViewModel();
-        private bool _silentMonitorConnected = true;
+        private bool _silentMonitorConnected = false;
         private bool _canBusConnected = false;
-        private BluetoothDeviceDisplay _selectedBluetoothDevice;
+        private string _lastError;
+        private CoreDispatcher _dispatcher;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public static ConnectionStateViewModel Instance
+        public ConnectionStateViewModel(CoreDispatcher dispatcher)
         {
-            get { return _instance; }
+            _dispatcher = dispatcher;
         }
-
         public bool SilentMonitorConnected
         {
             get { return _silentMonitorConnected; }
@@ -39,32 +39,22 @@ namespace UWPApp.ViewModels
             set
             {
                 _canBusConnected = value;
-                PropertyChanged.Invoke(this, new PropertyChangedEventArgs("CANBusConnected"));
+                _dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
+                    PropertyChanged.Invoke(this, new PropertyChangedEventArgs("CANBusConnected"));
+                }).AsTask().Wait();
+               
             }
         }
 
-        public ObservableCollection<BluetoothDeviceDisplay> AvailableBluetoothDeviceCollection
-        {
-            get;
-            set;
-        } = new ObservableCollection<BluetoothDeviceDisplay>();
-        public BluetoothDeviceDisplay SelectedBluetoothDevice{
+        public string LastError { 
             get {
-                if (_selectedBluetoothDevice == null)
-                {
-                    if (ApplicationData.Current.LocalSettings.Values["SelectedBluetoothDevice"] != null)
-                    {
-                        _selectedBluetoothDevice = AvailableBluetoothDeviceCollection.FirstOrDefault(d => d.Id == (string)ApplicationData.Current.LocalSettings.Values["SelectedBluetoothDevice"]);
-                    }
-                }
-                return _selectedBluetoothDevice; 
+                return _lastError;
             }
-            set {
-                if (_selectedBluetoothDevice == value) return;
-
-                _selectedBluetoothDevice = value;
-                ApplicationData.Current.LocalSettings.Values["SelectedBluetoothDevice"] = value.Id; ;
-                PropertyChanged.Invoke(this, new PropertyChangedEventArgs("SelectBluetoothDevice"));
+            internal set {
+                _lastError = value;
+                _dispatcher.RunAsync(CoreDispatcherPriority.Normal, ()=>{
+                    PropertyChanged.Invoke(this, new PropertyChangedEventArgs("LastError"));
+                }).AsTask().Wait();
             }
         }
     }
