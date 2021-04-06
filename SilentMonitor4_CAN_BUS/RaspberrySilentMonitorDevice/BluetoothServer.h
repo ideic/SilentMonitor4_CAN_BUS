@@ -5,16 +5,16 @@
 #include "BlockingQueue.h"
 struct BluetoothServer
 {
-	class SocketInfo;
+	struct SocketInfo;
 	std::shared_ptr<SocketInfo> _socketInfo;
 	std::atomic_bool _stopped{ false };
 	void Connect();
 public:
-	BluetoothServer(std::string address);
+	BluetoothServer();
 	~BluetoothServer();
 	void Run();
 	void Stop();
-	void SendCommand(const std::string& command);
+	void SendCommand(const std::string& command) const;
 	BlockingQueue<std::string> _receivedCommands;
 };
 
