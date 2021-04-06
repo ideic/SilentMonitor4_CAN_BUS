@@ -80,8 +80,11 @@ void BluetoothServer::Run()
         std::vector<uint8_t> buf(1024, 0);
         // read data from the client
         const auto bytes_read = read(_socketInfo->_client, buf.data(), buf.size());
+        Logger::Info("Bytes read: "s + std::to_string(bytes_read));
         if (bytes_read > 0) {
             _receivedCommands.push(std::string(begin(buf), end(buf)));
+            Logger::Info("Pushed message"s);
+
         }
         else if (bytes_read == 0) {
             std::this_thread::sleep_for(100ms);
@@ -94,7 +97,7 @@ void BluetoothServer::Run()
 void BluetoothServer::SendCommand(const std::string & command) const {
 	const auto result = write(_socketInfo->_client, command.c_str(), command.size());
     if (result < 0) {
-        throw std::runtime_error("Send Error errno:"s + std::to_string(errno) + " Reason: "s + std::string(strerror(errno)));
+        Logger::Error("Send Error errno:"s + std::to_string(errno) + " Reason: "s + std::string(strerror(errno)));
     }
 }
 

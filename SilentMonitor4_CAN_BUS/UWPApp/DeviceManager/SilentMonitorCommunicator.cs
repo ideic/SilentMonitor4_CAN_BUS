@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using UWPApp.DeviceManager.States;
 using UWPApp.ViewModels;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.Rfcomm;
@@ -19,12 +20,45 @@ namespace UWPApp.DeviceManager
         private static DataWriter _dataWriter;
         private static DataReader _dataReader;
         private ConnectionStateViewModel _connectionState;
+        private IViewContext _viewContext;
         private DeviceWatcher _deviceWatcher;
-        private Timer _timer;
 
-        public SilentMonitorCommunicator(ConnectionStateViewModel connectionState)
+        internal async Task<string> Send(string message)
+        {
+            //Request
+            _dataWriter.WriteString(message);
+            _dataWriter.StoreAsync().AsTask().Wait();
+
+            //Response
+            const uint responseSize = 4;
+            uint size = await _dataReader.LoadAsync(responseSize);
+            if (size < responseSize)
+            {
+                throw new Exception("Disconnected");
+            }
+
+            uint stringLength = UInt32.Parse(_dataReader.ReadString(responseSize));
+            uint actualStringLength = await _dataReader.LoadAsync(stringLength);
+            if (actualStringLength != stringLength)
+            {
+                throw new Exception("Disconnected during read");
+            }
+            return _dataReader.ReadString(stringLength);
+        }
+
+        internal void NextState (ICommunicationState nextState)
+        {
+            _currentState = nextState;
+            _viewContext.PostCommand(() => _currentState.Execute());
+        }
+
+        private Timer _timer;
+        private ICommunicationState _currentState;
+
+        public SilentMonitorCommunicator(ConnectionStateViewModel connectionState, IViewContext viewContext)
         {
             _connectionState = connectionState;
+            _viewContext = viewContext;
         }
 
         internal void InitBluetoothDeviceConnection()
@@ -140,12 +174,13 @@ namespace UWPApp.DeviceManager
                 return;
             }
             _connectionState.CANBusConnected = true;
+            NextState(new QueryDeviceState(this, _connectionState));
+            
         }
 
         private void StartTimer(TimerCallback callback, TimeSpan duetime)
         {
            _timer = new Timer(callback, null, (int)duetime.TotalMilliseconds, Timeout.Infinite);
-
         }
     }
 }

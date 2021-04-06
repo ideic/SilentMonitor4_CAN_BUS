@@ -29,7 +29,16 @@ namespace UWPApp.ViewModels
             set
             {
                 _silentMonitorConnected = value;
-                PropertyChanged.Invoke(this, new PropertyChangedEventArgs("SilentMonitorConnected"));
+                if (!_dispatcher.HasThreadAccess)
+                {
+                    _dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
+                        PropertyChanged.Invoke(this, new PropertyChangedEventArgs("SilentMonitorConnected"));
+                     }).AsTask().Wait();
+                }
+                else
+                {
+                    PropertyChanged.Invoke(this, new PropertyChangedEventArgs("SilentMonitorConnected"));
+                }
             }
         }
 
@@ -39,10 +48,17 @@ namespace UWPApp.ViewModels
             set
             {
                 _canBusConnected = value;
-                _dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
+                if (!_dispatcher.HasThreadAccess)
+                {
+                    _dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                    {
+                        PropertyChanged.Invoke(this, new PropertyChangedEventArgs("CANBusConnected"));
+                    }).AsTask().Wait();
+                }
+                else
+                {
                     PropertyChanged.Invoke(this, new PropertyChangedEventArgs("CANBusConnected"));
-                }).AsTask().Wait();
-               
+                }
             }
         }
 
@@ -52,9 +68,17 @@ namespace UWPApp.ViewModels
             }
             internal set {
                 _lastError = value;
-                _dispatcher.RunAsync(CoreDispatcherPriority.Normal, ()=>{
+                if (!_dispatcher.HasThreadAccess)
+                {
+                    _dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                    {
+                        PropertyChanged.Invoke(this, new PropertyChangedEventArgs("LastError"));
+                    }).AsTask().Wait();
+                }
+                else
+                {
                     PropertyChanged.Invoke(this, new PropertyChangedEventArgs("LastError"));
-                }).AsTask().Wait();
+                }
             }
         }
     }

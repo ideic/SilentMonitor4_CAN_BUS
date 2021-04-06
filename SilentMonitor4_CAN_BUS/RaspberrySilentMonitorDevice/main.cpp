@@ -1,23 +1,15 @@
-//#include <wiringPi.h>
-
-// LED Pin - wiringPi pin 0 is BCM_GPIO 17.
-// we have to use BCM numbering when initializing with wiringPiSetupSys
-// when choosing a different pin number please use the BCM numbering, also
-// update the Property Pages - Build Events - Remote Post-Build Event command
-// which uses gpio export for setup for wiringPiSetupSys
-//#define	LED	17
-//#include <stdio.h>
-//#include <stdlib.h>
-//#include <unistd.h>
-//#include <sys/socket.h>
-//#include <bluetooth/bluetooth.h>
-//#include <bluetooth/hci.h>
-//#include <bluetooth/hci_lib.h>
 #include <string>
 #include "BluetoothServer.h"
-using namespace std::string_literals;
+#include <thread>
+#include "SilentMonitorCommunicator.h"
+
+
 int main(void)
-{    BluetoothServer server;
-    server.Run();
+{   std::shared_ptr<BluetoothServer> bsserver = std::make_shared<BluetoothServer>();
+    std::thread _bsServerThread([&bsserver]() { bsserver->Run(); });
+
+    SilentMonitorCommunicator communicator(bsserver);
+
+    communicator.Run();
     return 0;
 }

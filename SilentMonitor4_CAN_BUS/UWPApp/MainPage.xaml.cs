@@ -30,21 +30,15 @@ namespace UWPApp
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class MainPage : Page
+    public sealed partial class MainPage : Page, IViewContext
     {
-        private RfcommConnectionTrigger trigger;
-        private BackgroundTaskRegistration _taskRegistration;
-        private DeviceWatcher _deviceWatcher;
         private SilentMonitorCommunicator _silentMonitorCommunnicator;
 
         public MainPage()
         {
             this.InitializeComponent();
             ConnectionState = new ConnectionStateViewModel(this.Dispatcher);
-            
-            trigger = new RfcommConnectionTrigger();
-            //trigger.OutboundConnection
-            //trigger.RemoteHostName
+           
             this.Loaded += MainPage_Loaded;
 
            
@@ -52,20 +46,8 @@ namespace UWPApp
 
         private async void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
-            _silentMonitorCommunnicator = new SilentMonitorCommunicator(ConnectionState);
+            _silentMonitorCommunnicator = new SilentMonitorCommunicator(ConnectionState, this);
             _silentMonitorCommunnicator.InitBluetoothDeviceConnection();
-            // Applications registering for background trigger must request for permission.
-            BackgroundAccessStatus backgroundAccessStatus = await BackgroundExecutionManager.RequestAccessAsync();
-
-            var builder = new BackgroundTaskBuilder();
-            //builder.TaskEntryPoint = "UWPApp.DeviceManager.RfcommClientTask";
-            builder.SetTrigger(trigger);
-            builder.Name = "RFCommClientTask";
-        }
-
-        private void Setting_Click(object sender, RoutedEventArgs e)
-        {
-
         }
 
         public ConnectionStateViewModel ConnectionState { get; set; }
@@ -141,6 +123,11 @@ namespace UWPApp
                 ContentArea.ChangeView(null, null, (float)e.OldValue / 100);
             }
             
+        }
+
+        public void PostCommand(Action promise)
+        {
+            Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => promise());
         }
     }
 }

@@ -125,11 +125,15 @@
     <Compile Include="DeviceManager\Constants.cs" />
     <Compile Include="DeviceManager\RfcommClientTask.cs" />
     <Compile Include="DeviceManager\SilentMonitorCommunicator.cs" />
+    <Compile Include="DeviceManager\States\ICommunicationState.cs" />
+    <Compile Include="DeviceManager\States\QueryDeviceState.cs" />
+    <Compile Include="DeviceManager\States\RetrieveFilesState.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\ConnectionStateViewModel.cs" />
+    <Compile Include="ViewModels\IViewContext.cs" />
     <Compile Include="ViewModels\PropertyChangedExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
