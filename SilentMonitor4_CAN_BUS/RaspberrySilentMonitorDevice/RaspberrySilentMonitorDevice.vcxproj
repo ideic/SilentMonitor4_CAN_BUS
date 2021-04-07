@@ -48,7 +48,7 @@
   <PropertyGroup Label="UserMacros" />
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <Link>
-      <LibraryDependencies>bluetooth;libstdc++fs.a</LibraryDependencies>
+      <LibraryDependencies>bluetooth</LibraryDependencies>
     </Link>
     <RemotePostBuildEvent>
       <Command>
