@@ -5,33 +5,34 @@ using System.Text;
 using System.Threading.Tasks;
 using UWPApp.ViewModels;
 using Windows.Data.Json;
+
 namespace UWPApp.DeviceManager.States
 {
-    class QueryDeviceState : ICommunicationState
+    public class RetrieveConfigState : ICommunicationState
     {
-        private SilentMonitorCommunicator _silentMonitorCommunicator;
+        private SilentMonitorCommunicator _communicator;
         private ConnectionStateViewModel _connectionState;
 
-        public QueryDeviceState(SilentMonitorCommunicator silentMonitorCommunicator, ConnectionStateViewModel connectionStateViewModel)
+        public RetrieveConfigState(SilentMonitorCommunicator communicator, ConnectionStateViewModel connectionState)
         {
-            _silentMonitorCommunicator = silentMonitorCommunicator;
-            _connectionState = connectionStateViewModel;
+            _communicator = communicator;
+            _connectionState = connectionState;
         }
-
         public void Execute()
         {
             JsonObject jsonObject = new JsonObject();
-            jsonObject["CommandType"]= JsonValue.CreateStringValue("GetState");
+            jsonObject["CommandType"] = JsonValue.CreateStringValue("GetConfig");
 
             try
             {
-                var response = _silentMonitorCommunicator.Send(jsonObject.Stringify()).Result;
+                var response = _communicator.Send(jsonObject.Stringify()).Result;
 
                 var jsonResult = JsonObject.Parse(response);
                 if (jsonResult["Status"].GetString() == "OK")
                 {
-                    _connectionState.CANBusConnected = jsonResult["CANBus"].GetString() == "Connected";
-                    _silentMonitorCommunicator.NextState(new RetrieveConfigState(_silentMonitorCommunicator, _connectionState));
+                    _connectionState.WifiHost = jsonResult["WifiHost"].GetString();
+                    _connectionState.WifiPort = jsonResult["WifiPort"].GetString();
+                    _communicator.NextState(new RetrieveConfigState(_communicator, _connectionState));
                 }
                 else
                 {
@@ -41,7 +42,7 @@ namespace UWPApp.DeviceManager.States
             catch (Exception ex)
             {
                 _connectionState.LastError = ex.Message;
-                _silentMonitorCommunicator.InitBluetoothDeviceConnection();
+                _communicator.InitBluetoothDeviceConnection();
             }
         }
     }

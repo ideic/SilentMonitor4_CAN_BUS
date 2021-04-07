@@ -46,9 +46,6 @@ namespace UWPApp
                
                 _connectionState.PropertyChanged += (s, e) =>
                 {
-                    //PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("PartiallyConnected"));
-                    //PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Connected"));
-                    //PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("NotConnected"));
                     SetValue(ConnectedProperty, _connectionState == null ? false : _connectionState.SilentMonitorConnected && _connectionState.CANBusConnected);
                     SetValue(NotConnectedProperty, _connectionState == null ? true : !_connectionState.SilentMonitorConnected && !_connectionState.CANBusConnected);
                     SetValue(PartiallyConnectedProperty, _connectionState == null ? false :

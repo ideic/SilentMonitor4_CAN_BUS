@@ -57,23 +57,24 @@
                                     <TextBlock Name="bluetoothConnectionMessage" Text="{x:Bind ConnectionState.LastError, Mode=OneWay}"/>
                                 </StackPanel>
                                 <StackPanel BorderThickness="1" BorderBrush="LightGray">
-                                <TextBlock Text="CAN Wifi SSID:"/>
-                                <AutoSuggestBox 
-                                    TextChanged="CANWifi_TextChanged"
-                                    SuggestionChosen="CANWifi_SuggestionChosen"
-                                    Name="CANWifi"
-                                    Text=""
-                                    Width="300"
-                                    IsEnabled="true" AllowFocusOnInteraction="True"/>
-                                <TextBlock Text="CAN Wifi Port:"/>
-                                <AutoSuggestBox 
-                                    TextChanged="CANWifiPort_TextChanged"
-                                    SuggestionChosen="CANWifiPort_SuggestionChosen"
-                                    Name="CANWifiPort"
-                                    Text=""
-                                    Width="300"
-                                    IsEnabled="true" AllowFocusOnInteraction="True"/>
-                            </StackPanel>
+                                    <TextBlock Text="CAN Wifi SSID:"/>
+                                    <AutoSuggestBox 
+                                        TextChanged="CANWifi_TextChanged"
+                                        SuggestionChosen="CANWifi_SuggestionChosen"
+                                        Name="CANWifi"
+                                        Text="{x:Bind ConnectionState.WifiHost, Mode=OneWay}"
+                                        Width="300"
+                                        IsEnabled="true" AllowFocusOnInteraction="True"/>
+                                    <TextBlock Text="CAN Wifi Port:"/>
+                                    <AutoSuggestBox 
+                                        TextChanged="CANWifiPort_TextChanged"
+                                        SuggestionChosen="CANWifiPort_SuggestionChosen"
+                                        Name="CANWifiPort"
+                                        Text="{x:Bind ConnectionState.WifiPort, Mode=OneWay}"
+                                        Width="300"
+                                        IsEnabled="true" AllowFocusOnInteraction="True"/>
+                                    <Button Name="btnSave" Content="Save" Click="btnSave_Click" />
+                                </StackPanel>
                             </StackPanel>
                         </Flyout>
                     </AppBarButton.Flyout>

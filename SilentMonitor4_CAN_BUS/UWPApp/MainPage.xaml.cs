@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using UWPApp.DeviceManager;
+using UWPApp.DeviceManager.States;
 using UWPApp.ViewModels;
 using Windows.ApplicationModel.Background;
 using Windows.Devices.Bluetooth;
@@ -128,6 +129,13 @@ namespace UWPApp
         public void PostCommand(Action promise)
         {
             Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => promise());
+        }
+
+        private void btnSave_Click(object sender, RoutedEventArgs e)
+        {
+            ConnectionState.WifiHost = CANWifi.Text;
+            ConnectionState.WifiPort = CANWifiPort.Text;
+            _silentMonitorCommunnicator.NextState(new SaveConfigState(_silentMonitorCommunnicator, ConnectionState));
         }
     }
 }

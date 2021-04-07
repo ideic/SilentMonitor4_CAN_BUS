@@ -10,6 +10,11 @@
     <ClCompile Include="StateCommandBase.cpp">
       <Filter>Commands</Filter>
     </ClCompile>
+    <ClCompile Include="SilentMonitorCommunicator.cpp" />
+    <ClCompile Include="ConfigCommand.cpp">
+      <Filter>Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="ConfigurationManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BlockingQueue.h" />
@@ -24,6 +29,11 @@
     <ClInclude Include="StateCommandBase.h">
       <Filter>Commands</Filter>
     </ClInclude>
+    <ClInclude Include="SilentMonitorCommunicator.h" />
+    <ClInclude Include="ConfigCommand.h">
+      <Filter>Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="ConfigurationManager.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="bluetooth_init.sh" />

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace UWPApp.ViewModels
 {
-    interface IViewContext
+    public interface IViewContext
     {
         void PostCommand(Action promise);   
     }

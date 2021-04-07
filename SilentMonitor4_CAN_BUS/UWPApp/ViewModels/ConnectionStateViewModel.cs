@@ -16,6 +16,8 @@ namespace UWPApp.ViewModels
         private bool _canBusConnected = false;
         private string _lastError;
         private CoreDispatcher _dispatcher;
+        private string _wifiHost;
+        private string _wifiPort;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -78,6 +80,50 @@ namespace UWPApp.ViewModels
                 else
                 {
                     PropertyChanged.Invoke(this, new PropertyChangedEventArgs("LastError"));
+                }
+            }
+        }
+
+        public string WifiHost {
+            get
+            {
+                return _wifiHost;
+            }
+            internal set
+            {
+                _wifiHost = value;
+                if (!_dispatcher.HasThreadAccess)
+                {
+                    _dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                    {
+                        PropertyChanged.Invoke(this, new PropertyChangedEventArgs("WifiHost"));
+                    }).AsTask().Wait();
+                }
+                else
+                {
+                    PropertyChanged.Invoke(this, new PropertyChangedEventArgs("WifiHost"));
+                }
+            }
+        }
+        public string WifiPort
+        {
+            get
+            {
+                return _wifiPort;
+            }
+            internal set
+            {
+                _wifiPort = value;
+                if (!_dispatcher.HasThreadAccess)
+                {
+                    _dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                    {
+                        PropertyChanged.Invoke(this, new PropertyChangedEventArgs("WifiPort"));
+                    }).AsTask().Wait();
+                }
+                else
+                {
+                    PropertyChanged.Invoke(this, new PropertyChangedEventArgs("WifiPort"));
                 }
             }
         }

@@ -15,7 +15,7 @@ using Windows.Storage.Streams;
 
 namespace UWPApp.DeviceManager
 {
-    class SilentMonitorCommunicator
+    public class SilentMonitorCommunicator
     {
         private static DataWriter _dataWriter;
         private static DataReader _dataReader;
