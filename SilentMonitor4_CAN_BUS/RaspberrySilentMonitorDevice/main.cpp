@@ -1,4 +1,3 @@
-#include <string>
 #include "BluetoothServer.h"
 #include <thread>
 #include "SilentMonitorCommunicator.h"

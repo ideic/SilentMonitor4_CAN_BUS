@@ -5,6 +5,7 @@
 #include "ConfigCommand.h"
 
 using json = nlohmann::json;
+using namespace std::string_literals;
 
 SilentMonitorCommunicator::SilentMonitorCommunicator(
 	std::shared_ptr<BluetoothServer> bluetoothServer, std::shared_ptr<ConfigurationManager> configManager)
@@ -16,17 +17,17 @@ SilentMonitorCommunicator::SilentMonitorCommunicator(
 void SilentMonitorCommunicator::Run() {
 	while (!_stopped) {
 		std::string request = _bluetoothServer->_receivedCommands.getNext();
-		Logger::Info("request got: " + request);
+		Logger::Info("request got: "s + request);
 		auto reqjson = json::parse(request);
-		if (reqjson["CommandType"].get<std::string>() == "GetState") {
+		if (reqjson["CommandType"].get<std::string>() == "GetState"s) {
 			GetStateCommand cmd;
 			_bluetoothServer->SendCommand(cmd.GetResponse());
 		}
-		if (reqjson["CommandType"].get<std::string>() == "GetConfig") {
+		if (reqjson["CommandType"].get<std::string>() == "GetConfig"s) {
 			ConfigCommand cmd(_configManager);
 			_bluetoothServer->SendCommand(cmd.GetResponse());
 		}
-		if (reqjson["CommandType"].get<std::string>() == "SetConfig") {
+		if (reqjson["CommandType"].get<std::string>() == "SetConfig"s) {
 			ConfigCommand cmd(_configManager);
 			_bluetoothServer->SendCommand(
 				cmd.SetResponse(

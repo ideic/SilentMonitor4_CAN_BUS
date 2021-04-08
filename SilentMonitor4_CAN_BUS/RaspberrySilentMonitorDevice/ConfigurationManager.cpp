@@ -1,17 +1,22 @@
 #include "ConfigurationManager.h"
 #include "nlohmann/json.hpp"
-#include <filesystem>
+#include <unistd.h>
+
 using json = nlohmann::json;
 
 using namespace std::string_literals;
 
 ConfigurationManager::ConfigurationManager() {
-    auto currentpath = std::filesystem::current_path();
-    auto configFilePath = currentpath.generic_string() + "/canbussniffer.config"s;
+    std::string currentPath;
+	char cwd[1024];
+    if (getcwd(cwd, sizeof(cwd)) != nullptr) {
+        currentPath = cwd;
+    }
+    const std::string configFilePath = currentPath.append("/canbussniffer.config"s);
 
    _config.open(configFilePath);
    if (!_config.is_open()) {
-       _workingDir = std::filesystem::current_path().generic_string();
+       _workingDir = currentPath;
    }
    else {
        std::string content;
@@ -27,8 +32,8 @@ ConfigurationManager::ConfigurationManager() {
        _workingDir = config["WorkingDir"].get<std::string>();
        auto logsinks = config["LogSinks"].get<std::string>();
        while (logsinks.length() > 0) {
-           auto sink = logsinks.substr(0, logsinks.find_first_of(';'));
-           if (sink == "console")
+           const std::string sink = logsinks.substr(0, logsinks.find_first_of(';'));
+           if (sink == "console"s)
                _logSetting.LogSinks.push_back(LogSink::Console);
            else
                _logSetting.LogSinks.push_back(LogSink::File);
@@ -39,8 +44,7 @@ ConfigurationManager::ConfigurationManager() {
    }
 
 }
-WifiSetting ConfigurationManager::GetWifiSetting()
-{
+WifiSetting ConfigurationManager::GetWifiSetting() const {
     return _wifiSetting;
 }
 
@@ -61,12 +65,10 @@ void ConfigurationManager::SetWifiSetting(WifiSetting wifiSetting)
     _config.write(contentString.c_str(), contentString.size());
 }
 
-LogSetting ConfigurationManager::GetLogSetting()
-{
+LogSetting ConfigurationManager::GetLogSetting() const {
     return _logSetting;
 }
 
-std::string ConfigurationManager::GetWorkingDir()
-{
+std::string ConfigurationManager::GetWorkingDir() const {
     return _workingDir;
 }

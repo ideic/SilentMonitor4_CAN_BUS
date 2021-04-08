@@ -3,7 +3,7 @@
 #include <memory>
 #include <atomic>
 #include "BlockingQueue.h"
-struct BluetoothServer
+class BluetoothServer
 {
 	struct SocketInfo;
 	std::shared_ptr<SocketInfo> _socketInfo;
