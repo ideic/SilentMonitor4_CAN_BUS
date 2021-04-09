@@ -1,7 +1,9 @@
 #pragma once
 #include "StateCommandBase.h"
-#include "ConfigurationManager.h"
 #include <memory>
+
+class ConfigurationManager;
+
 class ConfigCommand: public StateCommandBase
 {
 	std::shared_ptr<ConfigurationManager> _configManager;

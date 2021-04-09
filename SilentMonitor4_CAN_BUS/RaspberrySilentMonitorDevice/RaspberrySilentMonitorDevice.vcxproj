@@ -83,7 +83,23 @@
     <ClInclude Include="ConfigurationManager.h" />
     <ClInclude Include="GetStateCommand.h" />
     <ClInclude Include="Logger.h" />
-    <ClInclude Include="nlohmann\json.hpp" />
+    <ClInclude Include="quentem\ALE.hpp" />
+    <ClInclude Include="quentem\Array.hpp" />
+    <ClInclude Include="quentem\Common.hpp" />
+    <ClInclude Include="quentem\Digit.hpp" />
+    <ClInclude Include="quentem\Engine.hpp" />
+    <ClInclude Include="quentem\HArray.hpp" />
+    <ClInclude Include="quentem\JSON.hpp" />
+    <ClInclude Include="quentem\JSONUtils.hpp" />
+    <ClInclude Include="quentem\Memory.hpp" />
+    <ClInclude Include="quentem\Platform.hpp" />
+    <ClInclude Include="quentem\QPointer.hpp" />
+    <ClInclude Include="quentem\String.hpp" />
+    <ClInclude Include="quentem\StringStream.hpp" />
+    <ClInclude Include="quentem\StringUtils.hpp" />
+    <ClInclude Include="quentem\Template.hpp" />
+    <ClInclude Include="quentem\Unicode.hpp" />
+    <ClInclude Include="quentem\Value.hpp" />
     <ClInclude Include="SilentMonitorCommunicator.h" />
     <ClInclude Include="StateCommandBase.h" />
   </ItemGroup>
@@ -106,7 +122,7 @@
       </Command>
     </RemotePreBuildEvent>
     <ClCompile>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)quentem;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <CppLanguageStandard>c++17</CppLanguageStandard>
     </ClCompile>
   </ItemDefinitionGroup>

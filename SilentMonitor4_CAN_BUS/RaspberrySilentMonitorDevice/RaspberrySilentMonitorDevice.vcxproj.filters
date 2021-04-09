@@ -20,9 +20,6 @@
     <ClInclude Include="BlockingQueue.h" />
     <ClInclude Include="BluetoothServer.h" />
     <ClInclude Include="Logger.h" />
-    <ClInclude Include="nlohmann\json.hpp">
-      <Filter>nlohmann</Filter>
-    </ClInclude>
     <ClInclude Include="GetStateCommand.h">
       <Filter>Commands</Filter>
     </ClInclude>
@@ -34,16 +31,67 @@
       <Filter>Commands</Filter>
     </ClInclude>
     <ClInclude Include="ConfigurationManager.h" />
+    <ClInclude Include="quentem\ALE.hpp">
+      <Filter>Quentem</Filter>
+    </ClInclude>
+    <ClInclude Include="quentem\Array.hpp">
+      <Filter>Quentem</Filter>
+    </ClInclude>
+    <ClInclude Include="quentem\Common.hpp">
+      <Filter>Quentem</Filter>
+    </ClInclude>
+    <ClInclude Include="quentem\Digit.hpp">
+      <Filter>Quentem</Filter>
+    </ClInclude>
+    <ClInclude Include="quentem\Engine.hpp">
+      <Filter>Quentem</Filter>
+    </ClInclude>
+    <ClInclude Include="quentem\HArray.hpp">
+      <Filter>Quentem</Filter>
+    </ClInclude>
+    <ClInclude Include="quentem\JSON.hpp">
+      <Filter>Quentem</Filter>
+    </ClInclude>
+    <ClInclude Include="quentem\JSONUtils.hpp">
+      <Filter>Quentem</Filter>
+    </ClInclude>
+    <ClInclude Include="quentem\Memory.hpp">
+      <Filter>Quentem</Filter>
+    </ClInclude>
+    <ClInclude Include="quentem\Platform.hpp">
+      <Filter>Quentem</Filter>
+    </ClInclude>
+    <ClInclude Include="quentem\QPointer.hpp">
+      <Filter>Quentem</Filter>
+    </ClInclude>
+    <ClInclude Include="quentem\String.hpp">
+      <Filter>Quentem</Filter>
+    </ClInclude>
+    <ClInclude Include="quentem\StringStream.hpp">
+      <Filter>Quentem</Filter>
+    </ClInclude>
+    <ClInclude Include="quentem\StringUtils.hpp">
+      <Filter>Quentem</Filter>
+    </ClInclude>
+    <ClInclude Include="quentem\Template.hpp">
+      <Filter>Quentem</Filter>
+    </ClInclude>
+    <ClInclude Include="quentem\Unicode.hpp">
+      <Filter>Quentem</Filter>
+    </ClInclude>
+    <ClInclude Include="quentem\Value.hpp">
+      <Filter>Quentem</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="bluetooth_init.sh" />
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="nlohmann">
-      <UniqueIdentifier>{a2d30393-a2ef-40eb-80c5-975beddebc21}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Commands">
       <UniqueIdentifier>{d405ca70-db06-40d3-a60f-2f96cd46dc9d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Quentem">
+      <UniqueIdentifier>{696b5017-2f5c-4957-b4c4-b8c3b262f137}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

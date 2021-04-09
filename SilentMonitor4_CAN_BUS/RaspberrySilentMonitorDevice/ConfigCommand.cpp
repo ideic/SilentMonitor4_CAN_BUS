@@ -1,6 +1,9 @@
 #include "ConfigCommand.h"
-#include "nlohmann/json.hpp"
-using json = nlohmann::json;
+#include "ConfigurationManager.h"
+#include "JSON.hpp"
+#include <sstream>
+
+using Value = Qentem::Value<char>;
 
 ConfigCommand::ConfigCommand(std::shared_ptr<ConfigurationManager> configManager): _configManager(std::move(configManager))
 {
@@ -8,28 +11,34 @@ ConfigCommand::ConfigCommand(std::shared_ptr<ConfigurationManager> configManager
 
 std::string ConfigCommand::GetResponse()
 {
-	json j;
-	j["Status"] = "OK";
-	j["WifiHost"] = _configManager->GetWifiSetting().Host;
-	j["WifiPort"] = _configManager->GetWifiSetting().Port;
-	j["ErrorMessage"] = "";
-	return StateCommandBase::GetResponse(j.dump());
+	Value v;
+	v["Status"] = "OK";
+	v["WifiHost"] = _configManager->GetWifiSetting().Host.c_str();
+	v["WifiPort"] = _configManager->GetWifiSetting().Port.c_str();
+	v["ErrorMessage"] =  "";
+	
+	std::stringstream osstream;
+	osstream << v.Stringify();
+	return StateCommandBase::GetResponse(osstream.str());
 }
 
 std::string ConfigCommand::SetResponse(const std::string& host, const std::string& port)
 {
-	json j;
+	Value v;
 	try
 	{
 		_configManager->SetWifiSetting(WifiSetting{ host, port });
-		j["Status"] = "OK";
-		j["ErrorMessage"] = "";
+		v["Status"] = "OK";
+		v["ErrorMessage"] = "";
+
 	}
 	catch (const std::exception& ex)
 	{
-		j["Status"] = "Failed";
-		j["ErrorMessage"] = ex.what();
+		v["Status"] = "Failed";
+		v["ErrorMessage"] = ex.what();
 	}
-	
-	return StateCommandBase::GetResponse(j.dump());
+
+	std::stringstream osstream;
+	osstream << v.Stringify();
+	return StateCommandBase::GetResponse(osstream.str());
 }

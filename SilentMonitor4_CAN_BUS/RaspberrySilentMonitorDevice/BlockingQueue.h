@@ -1,9 +1,7 @@
 #pragma once
 #include <condition_variable>
-#include <memory>
 #include <mutex>
 #include <queue>
-#include <utility>
 
 template<typename VALUE_TYPE>
 class BlockingQueue {

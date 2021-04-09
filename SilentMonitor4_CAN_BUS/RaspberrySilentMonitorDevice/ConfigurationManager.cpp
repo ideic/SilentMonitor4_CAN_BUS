@@ -1,9 +1,10 @@
 #include "ConfigurationManager.h"
-#include "nlohmann/json.hpp"
+#include "JSON.hpp"
 #include <unistd.h>
+#include <sstream>
 
-using json = nlohmann::json;
-
+using Value = Qentem::Value<char>;
+namespace JSON= Qentem::JSON;
 using namespace std::string_literals;
 
 ConfigurationManager::ConfigurationManager() {
@@ -26,11 +27,11 @@ ConfigurationManager::ConfigurationManager() {
            content += line;
        }
 
-       auto config = json::parse(content);
-       _wifiSetting.Host = config["WifiHost"].get<std::string>();
-       _wifiSetting.Port = config["WifiPort"].get<std::string>();
-       _workingDir = config["WorkingDir"].get<std::string>();
-       auto logsinks = config["LogSinks"].get<std::string>();
+       auto config = JSON::Parse(content.c_str());
+       _wifiSetting.Host = config["WifiHost"].GetString()->Storage();
+       _wifiSetting.Port = config["WifiPort"].GetString()->Storage();
+       _workingDir = config["WorkingDir"].GetString()->Storage();
+       std::string logsinks = config["LogSinks"].GetString()->Storage();
        while (logsinks.length() > 0) {
            const std::string sink = logsinks.substr(0, logsinks.find_first_of(';'));
            if (sink == "console"s)
@@ -51,17 +52,22 @@ WifiSetting ConfigurationManager::GetWifiSetting() const {
 void ConfigurationManager::SetWifiSetting(WifiSetting wifiSetting)
 {
     _wifiSetting = wifiSetting;
-    json content;
-    content["WifiHost"] = _wifiSetting.Host;
-    content["WifiPort"] = _wifiSetting.Port;
-    content["WorkingDir"] = _workingDir;
+    Value content;
+ 
+    content["WifiHost"] = _wifiSetting.Host.c_str();
+    content["WifiPort"] = _wifiSetting.Port.c_str();
+    content["WorkingDir"] = _workingDir.c_str();
     std::string sinks;
     for (auto&& sink : _logSetting.LogSinks) {
         sinks += (sink == LogSink::Console ? "console" : "file") + ";"s;
     }
 
-    content["LogSinks"] = sinks;
-    auto contentString = content.dump();
+    content["LogSinks"] = sinks.c_str();
+	
+    std::stringstream osstream;
+    osstream << content.Stringify();
+	
+    std::string contentString = osstream.str();
     _config.write(contentString.c_str(), contentString.size());
 }
 

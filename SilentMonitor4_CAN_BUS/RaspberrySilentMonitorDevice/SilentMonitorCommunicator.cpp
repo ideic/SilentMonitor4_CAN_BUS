@@ -1,10 +1,12 @@
 #include "SilentMonitorCommunicator.h"
-#include "nlohmann/json.hpp"
+
 #include "GetStateCommand.h"
 #include "Logger.h"
 #include "ConfigCommand.h"
-
-using json = nlohmann::json;
+#include "JSON.hpp"
+#include <string.h>
+using Value = Qentem::Value<char>;
+namespace JSON = Qentem::JSON;
 using namespace std::string_literals;
 
 SilentMonitorCommunicator::SilentMonitorCommunicator(
@@ -18,21 +20,21 @@ void SilentMonitorCommunicator::Run() {
 	while (!_stopped) {
 		std::string request = _bluetoothServer->_receivedCommands.getNext();
 		Logger::Info("request got: "s + request);
-		auto reqjson = json::parse(request);
-		if (reqjson["CommandType"].get<std::string>() == "GetState"s) {
+		auto reqjson = JSON::Parse(request.c_str());
+		if (strcmp(reqjson["CommandType"].GetString()->Storage(), "GetState") == 0) {
 			GetStateCommand cmd;
 			_bluetoothServer->SendCommand(cmd.GetResponse());
 		}
-		if (reqjson["CommandType"].get<std::string>() == "GetConfig"s) {
+		if (strcmp(reqjson["CommandType"].GetString()->Storage(),"GetConfig") == 0) {
 			ConfigCommand cmd(_configManager);
 			_bluetoothServer->SendCommand(cmd.GetResponse());
 		}
-		if (reqjson["CommandType"].get<std::string>() == "SetConfig"s) {
+		if (strcmp(reqjson["CommandType"].GetString()->Storage(), "SetConfig") == 0) {
 			ConfigCommand cmd(_configManager);
 			_bluetoothServer->SendCommand(
 				cmd.SetResponse(
-					reqjson["WifiHost"].get<std::string>(),
-					reqjson["WifiPort"].get<std::string>()));
+					reqjson["WifiHost"].GetString()->Storage(),
+					reqjson["WifiPort"].GetString()->Storage()));
 		}
 	}
 }
