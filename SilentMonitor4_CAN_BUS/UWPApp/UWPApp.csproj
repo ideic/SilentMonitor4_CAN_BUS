@@ -127,7 +127,7 @@
     <Compile Include="DeviceManager\SilentMonitorCommunicator.cs" />
     <Compile Include="DeviceManager\States\ICommunicationState.cs" />
     <Compile Include="DeviceManager\States\QueryDeviceState.cs" />
-    <Compile Include="DeviceManager\States\RetrieveConfigState.cs" />
+    <Compile Include="DeviceManager\States\QueryConfigState.cs" />
     <Compile Include="DeviceManager\States\RetrieveFilesState.cs" />
     <Compile Include="DeviceManager\States\SaveConfigState.cs" />
     <Compile Include="MainPage.xaml.cs">

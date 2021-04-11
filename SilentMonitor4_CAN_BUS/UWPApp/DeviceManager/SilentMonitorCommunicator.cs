@@ -175,7 +175,7 @@ namespace UWPApp.DeviceManager
             }
             _connectionState.CANBusConnected = true;
             NextState(new QueryDeviceState(this, _connectionState));
-            
+            NextState(new QueryConfigState(this, _connectionState));
         }
 
         private void StartTimer(TimerCallback callback, TimeSpan duetime)

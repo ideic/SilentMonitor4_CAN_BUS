@@ -8,12 +8,12 @@ using Windows.Data.Json;
 
 namespace UWPApp.DeviceManager.States
 {
-    public class RetrieveConfigState : ICommunicationState
+    public class QueryConfigState : ICommunicationState
     {
         private SilentMonitorCommunicator _communicator;
         private ConnectionStateViewModel _connectionState;
 
-        public RetrieveConfigState(SilentMonitorCommunicator communicator, ConnectionStateViewModel connectionState)
+        public QueryConfigState(SilentMonitorCommunicator communicator, ConnectionStateViewModel connectionState)
         {
             _communicator = communicator;
             _connectionState = connectionState;
@@ -32,11 +32,11 @@ namespace UWPApp.DeviceManager.States
                 {
                     _connectionState.WifiHost = jsonResult["WifiHost"].GetString();
                     _connectionState.WifiPort = jsonResult["WifiPort"].GetString();
-                    _communicator.NextState(new RetrieveConfigState(_communicator, _connectionState));
                 }
                 else
                 {
                     _connectionState.LastError = jsonResult["ErrorMessage"].GetString();
+
                 }
             }
             catch (Exception ex)

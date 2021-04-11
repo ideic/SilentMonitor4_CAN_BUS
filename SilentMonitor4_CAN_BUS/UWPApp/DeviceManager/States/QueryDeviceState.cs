@@ -31,7 +31,7 @@ namespace UWPApp.DeviceManager.States
                 if (jsonResult["Status"].GetString() == "OK")
                 {
                     _connectionState.CANBusConnected = jsonResult["CANBus"].GetString() == "Connected";
-                    _silentMonitorCommunicator.NextState(new RetrieveConfigState(_silentMonitorCommunicator, _connectionState));
+                    _silentMonitorCommunicator.NextState(new QueryConfigState(_silentMonitorCommunicator, _connectionState));
                 }
                 else
                 {
