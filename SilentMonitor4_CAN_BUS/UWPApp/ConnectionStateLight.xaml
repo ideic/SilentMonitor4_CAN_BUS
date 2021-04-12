@@ -10,16 +10,16 @@
     d:DesignWidth="400">
 
     <StackPanel>
-        <StackPanel Orientation="Horizontal" Visibility="{x:Bind NotConnected}">
+        <StackPanel Orientation="Horizontal" Visibility="{Binding Path=NotConnected}">
             <Ellipse x:Name="RedLamp" Fill="#FF0000" Height="15" Stroke="Black" Width="15" Margin="10,0,0,0"/>
             <TextBlock Name="lblNotConnected"  Text="Not Connected" Margin="5,0,0,0"/>
         </StackPanel>
-        <StackPanel Orientation="Horizontal" Visibility="{x:Bind PartiallyConnected}">
+        <StackPanel Orientation="Horizontal" Visibility="{Binding Path=PartiallyConnected}">
             <Ellipse x:Name="YellowLamp" Fill="Orange" Height="15" Stroke="Black" Width="15" Margin="10,0,0,0"/>
             <TextBlock Name="lblPartiallyConnected"  Text="Silent Monitor Device is Connected" Margin="5,0,0,0"/>
         </StackPanel>
 
-        <StackPanel Orientation="Horizontal" Visibility="{x:Bind Connected}">
+        <StackPanel Orientation="Horizontal" Visibility="{Binding Path=Connected}">
             <Ellipse x:Name="GreenLamp" Fill="#00DD00" Height="15" Stroke="Black" Width="15" Margin="10,0,0,0"/>
             <TextBlock Name="lblConnected"  Text="All participants are Connected" Margin="5,0,0,0"/>
         </StackPanel>
