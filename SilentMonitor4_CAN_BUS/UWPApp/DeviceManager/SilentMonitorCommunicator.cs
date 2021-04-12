@@ -23,7 +23,7 @@ namespace UWPApp.DeviceManager
         private IViewContext _viewContext;
         private DeviceWatcher _deviceWatcher;
 
-        internal async Task<string> Send(string message)
+        internal string Send(string message)
         {
             //Request
             _dataWriter.WriteString(message);
@@ -31,14 +31,14 @@ namespace UWPApp.DeviceManager
 
             //Response
             const uint responseSize = 4;
-            uint size = await _dataReader.LoadAsync(responseSize);
+            uint size = _dataReader.LoadAsync(responseSize).AsTask().Result;
             if (size < responseSize)
             {
                 throw new Exception("Disconnected");
             }
 
             uint stringLength = UInt32.Parse(_dataReader.ReadString(responseSize));
-            uint actualStringLength = await _dataReader.LoadAsync(stringLength);
+            uint actualStringLength = _dataReader.LoadAsync(stringLength).AsTask().Result;
             if (actualStringLength != stringLength)
             {
                 throw new Exception("Disconnected during read");
@@ -175,7 +175,6 @@ namespace UWPApp.DeviceManager
             }
             _connectionState.CANBusConnected = true;
             NextState(new QueryDeviceState(this, _connectionState));
-            NextState(new QueryConfigState(this, _connectionState));
         }
 
         private void StartTimer(TimerCallback callback, TimeSpan duetime)

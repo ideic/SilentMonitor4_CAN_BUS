@@ -25,18 +25,19 @@ namespace UWPApp.DeviceManager.States
 
             try
             {
-                var response = _silentMonitorCommunicator.Send(jsonObject.Stringify()).Result;
+                var response = _silentMonitorCommunicator.Send(jsonObject.Stringify());
 
                 var jsonResult = JsonObject.Parse(response);
                 if (jsonResult["Status"].GetString() == "OK")
                 {
                     _connectionState.CANBusConnected = jsonResult["CANBus"].GetString() == "Connected";
-                    _silentMonitorCommunicator.NextState(new QueryConfigState(_silentMonitorCommunicator, _connectionState));
                 }
                 else
                 {
                     _connectionState.LastError = jsonResult["ErrorMessage"].GetString();
                 }
+
+                _silentMonitorCommunicator.NextState(new QueryConfigState(_silentMonitorCommunicator, _connectionState));
             }
             catch (Exception ex)
             {

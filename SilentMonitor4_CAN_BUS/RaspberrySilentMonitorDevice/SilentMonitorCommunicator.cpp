@@ -24,17 +24,20 @@ void SilentMonitorCommunicator::Run() {
 		if (strcmp(reqjson["CommandType"].GetString()->Storage(), "GetState") == 0) {
 			GetStateCommand cmd;
 			_bluetoothServer->SendCommand(cmd.GetResponse());
+			continue;
 		}
 		if (strcmp(reqjson["CommandType"].GetString()->Storage(),"GetConfig") == 0) {
 			ConfigCommand cmd(_configManager);
-			_bluetoothServer->SendCommand(cmd.GetResponse());
+			_bluetoothServer->SendCommand(cmd.GetConfig());
+			continue;
 		}
-		if (strcmp(reqjson["CommandType"].GetString()->Storage(), "SetConfig") == 0) {
+		if (strcmp(reqjson["CommandType"].GetString()->Storage(), "SaveConfig") == 0) {
 			ConfigCommand cmd(_configManager);
 			_bluetoothServer->SendCommand(
-				cmd.SetResponse(
+				cmd.SetConfig(
 					reqjson["WifiHost"].GetString()->Storage(),
 					reqjson["WifiPort"].GetString()->Storage()));
+			continue;
 		}
 	}
 }

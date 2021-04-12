@@ -1,7 +1,6 @@
 #pragma once
 #include <string>
 #include <vector>
-#include <fstream>
 
 struct WifiSetting {
 	std::string Host{};
@@ -18,10 +17,10 @@ struct LogSetting {
 };
 class ConfigurationManager
 {
-	std::fstream _config{};
 	WifiSetting _wifiSetting{};
 	LogSetting _logSetting{};
 	std::string _workingDir{};
+	std::string _configFilePath{};
 public:
 	ConfigurationManager();
 	WifiSetting GetWifiSetting() const;

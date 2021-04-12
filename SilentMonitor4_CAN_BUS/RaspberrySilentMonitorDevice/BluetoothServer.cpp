@@ -99,6 +99,9 @@ void BluetoothServer::SendCommand(const std::string & command) const {
     if (result < 0) {
         Logger::Error("Send Error errno:"s + std::to_string(errno) + " Reason: "s + std::string(strerror(errno)));
     }
+    else {
+        Logger::Info("Command sent:"s + command);
+    }
 }
 
 void BluetoothServer::Connect(){

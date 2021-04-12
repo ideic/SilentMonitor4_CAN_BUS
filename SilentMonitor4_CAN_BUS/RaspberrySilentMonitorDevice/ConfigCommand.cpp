@@ -9,7 +9,7 @@ ConfigCommand::ConfigCommand(std::shared_ptr<ConfigurationManager> configManager
 {
 }
 
-std::string ConfigCommand::GetResponse()
+std::string ConfigCommand::GetConfig()
 {
 	Value v;
 	v["Status"] = "OK";
@@ -22,7 +22,7 @@ std::string ConfigCommand::GetResponse()
 	return StateCommandBase::GetResponse(osstream.str());
 }
 
-std::string ConfigCommand::SetResponse(const std::string& host, const std::string& port)
+std::string ConfigCommand::SetConfig(const std::string& host, const std::string& port)
 {
 	Value v;
 	try

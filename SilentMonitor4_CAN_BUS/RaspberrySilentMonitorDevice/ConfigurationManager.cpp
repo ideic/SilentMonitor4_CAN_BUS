@@ -2,6 +2,8 @@
 #include "JSON.hpp"
 #include <unistd.h>
 #include <sstream>
+#include <fstream>
+#include <stdio.h>
 
 using Value = Qentem::Value<char>;
 namespace JSON= Qentem::JSON;
@@ -13,16 +15,17 @@ ConfigurationManager::ConfigurationManager() {
     if (getcwd(cwd, sizeof(cwd)) != nullptr) {
         currentPath = cwd;
     }
-    const std::string configFilePath = currentPath.append("/canbussniffer.config"s);
+    _configFilePath = currentPath.append("/canbussniffer.config"s);
 
-   _config.open(configFilePath);
-   if (!_config.is_open()) {
+   std::ifstream config{};
+   config.open(_configFilePath);
+   if (!config.is_open()) {
        _workingDir = currentPath;
    }
    else {
        std::string content;
        std::string line;
-       while (getline(_config, line))
+       while (getline(config, line))
        {
            content += line;
        }
@@ -68,7 +71,16 @@ void ConfigurationManager::SetWifiSetting(WifiSetting wifiSetting)
     osstream << content.Stringify();
 	
     std::string contentString = osstream.str();
-    _config.write(contentString.c_str(), contentString.size());
+
+    std::ofstream config{};
+    config.open(_configFilePath, std::ios_base::trunc);
+    if (!config.is_open()) {
+        char err[1024];
+        perror(err);
+        throw std::runtime_error("Error cannot open config file"s + std::string(err));
+    }
+    config << contentString;
+    config.close();
 }
 
 LogSetting ConfigurationManager::GetLogSetting() const {

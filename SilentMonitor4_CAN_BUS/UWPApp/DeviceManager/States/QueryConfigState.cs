@@ -25,7 +25,7 @@ namespace UWPApp.DeviceManager.States
 
             try
             {
-                var response = _communicator.Send(jsonObject.Stringify()).Result;
+                var response = _communicator.Send(jsonObject.Stringify());
 
                 var jsonResult = JsonObject.Parse(response);
                 if (jsonResult["Status"].GetString() == "OK")

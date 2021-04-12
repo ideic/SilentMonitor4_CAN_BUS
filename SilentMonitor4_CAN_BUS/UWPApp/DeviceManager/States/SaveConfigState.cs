@@ -26,7 +26,7 @@ namespace UWPApp.DeviceManager.States
             jsonObject["WifiPort"] = JsonValue.CreateStringValue(_connectionState.WifiPort) ;
             try
             {
-                var response = _communicator.Send(jsonObject.Stringify()).Result;
+                var response = _communicator.Send(jsonObject.Stringify());
 
                 var jsonResult = JsonObject.Parse(response);
                 if (jsonResult["Status"].GetString() != "OK")

@@ -31,6 +31,7 @@ namespace UWPApp
         public ConnectionStateLight()
         {
             this.InitializeComponent();
+           
         }
 
         public ConnectionStateViewModel ConnectionState
@@ -39,7 +40,6 @@ namespace UWPApp
             set
             {
                 _connectionState = value;
-
                 SetValue(ConnectedProperty, _connectionState == null ? false : _connectionState.SilentMonitorConnected && _connectionState.CANBusConnected);
                 SetValue(NotConnectedProperty, _connectionState == null ? true : !_connectionState.SilentMonitorConnected && !_connectionState.CANBusConnected);
                 SetValue(PartiallyConnectedProperty, _connectionState == null ? false : (!Connected && !NotConnected && _connectionState.CANBusConnected));
