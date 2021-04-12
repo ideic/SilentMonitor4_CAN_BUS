@@ -46,12 +46,17 @@ namespace UWPApp
                
                 _connectionState.PropertyChanged += (s, e) =>
                 {
-                    SetValue(ConnectedProperty, _connectionState == null ? false : _connectionState.SilentMonitorConnected && _connectionState.CANBusConnected);
-                    SetValue(NotConnectedProperty, _connectionState == null ? true : !_connectionState.SilentMonitorConnected && !_connectionState.CANBusConnected);
-                    SetValue(PartiallyConnectedProperty, _connectionState == null ? false :
-                        (!Connected && !NotConnected && _connectionState.CANBusConnected));
-
-
+                    switch (e.PropertyName)
+                    {
+                        case "CANBusConnected":
+                        case "SilentMonitorConnected":
+                            {
+                                SetValue(ConnectedProperty, _connectionState == null ? false : _connectionState.SilentMonitorConnected && _connectionState.CANBusConnected);
+                                SetValue(NotConnectedProperty, _connectionState == null ? true : !_connectionState.SilentMonitorConnected && !_connectionState.CANBusConnected);
+                                SetValue(PartiallyConnectedProperty, _connectionState == null ? false : (!Connected && !NotConnected && _connectionState.CANBusConnected));
+                            }
+                            break;
+                    }
                 };
             }
         }
