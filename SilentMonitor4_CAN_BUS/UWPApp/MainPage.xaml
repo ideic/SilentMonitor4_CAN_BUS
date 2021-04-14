@@ -96,7 +96,7 @@
     </StackPanel>
         <Grid Grid.Row="2">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="150"/>
+                    <ColumnDefinition Width="300"/>
                     <ColumnDefinition/>
                     <ColumnDefinition Width="110"/>
                 </Grid.ColumnDefinitions>

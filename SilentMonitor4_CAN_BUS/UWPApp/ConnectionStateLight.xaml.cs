@@ -24,26 +24,37 @@ namespace UWPApp
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public static readonly DependencyProperty PartiallyConnectedProperty = DependencyProperty.Register("PartiallyConnected", typeof(bool), typeof(ConnectionStateLight), null);
-        public static readonly DependencyProperty ConnectedProperty = DependencyProperty.Register("Connected", typeof(bool), typeof(ConnectionStateLight), null);
-        public static readonly DependencyProperty NotConnectedProperty = DependencyProperty.Register("NotConnected", typeof(bool), typeof(ConnectionStateLight), null);
-
+        public static readonly DependencyProperty PartiallyConnectedProperty = DependencyProperty.RegisterAttached("PartiallyConnected", typeof(Visibility), typeof(ConnectionStateLight), new PropertyMetadata(Visibility.Collapsed));
+        public static readonly DependencyProperty ConnectedProperty = DependencyProperty.Register("Connected", typeof(Visibility), typeof(ConnectionStateLight), new PropertyMetadata(Visibility.Collapsed));
+        public static readonly DependencyProperty NotConnectedProperty = DependencyProperty.Register("NotConnected", typeof(Visibility), typeof(ConnectionStateLight), new PropertyMetadata(Visibility.Visible));
+ 
         public ConnectionStateLight()
         {
             this.InitializeComponent();
-           
+            SetProperties();
         }
-
+        private void SetProperties()
+        {
+            if (_connectionState == null)
+            {
+                Connected = Visibility.Collapsed;
+                NotConnected = Visibility.Visible;
+                PartiallyConnected = Visibility.Collapsed;
+            }
+            else
+            {
+                Connected = (_connectionState.SilentMonitorConnected && _connectionState.CANBusConnected) ? Visibility.Visible : Visibility.Collapsed;
+                NotConnected = (!_connectionState.SilentMonitorConnected && !_connectionState.CANBusConnected)? Visibility.Visible : Visibility.Collapsed;
+                PartiallyConnected = ((Connected == Visibility.Collapsed) && (NotConnected==Visibility.Collapsed) && _connectionState.CANBusConnected) ? Visibility.Visible : Visibility.Collapsed;
+            }
+        }
         public ConnectionStateViewModel ConnectionState
         {
             get { return _connectionState; }
             set
             {
                 _connectionState = value;
-                SetValue(ConnectedProperty, _connectionState == null ? false : _connectionState.SilentMonitorConnected && _connectionState.CANBusConnected);
-                SetValue(NotConnectedProperty, _connectionState == null ? true : !_connectionState.SilentMonitorConnected && !_connectionState.CANBusConnected);
-                SetValue(PartiallyConnectedProperty, _connectionState == null ? false : (!Connected && !NotConnected && _connectionState.CANBusConnected));
-               
+                SetProperties();
                 _connectionState.PropertyChanged += (s, e) =>
                 {
                     switch (e.PropertyName)
@@ -51,28 +62,29 @@ namespace UWPApp
                         case "CANBusConnected":
                         case "SilentMonitorConnected":
                             {
-                                SetValue(ConnectedProperty, _connectionState == null ? false : _connectionState.SilentMonitorConnected && _connectionState.CANBusConnected);
-                                SetValue(NotConnectedProperty, _connectionState == null ? true : !_connectionState.SilentMonitorConnected && !_connectionState.CANBusConnected);
-                                SetValue(PartiallyConnectedProperty, _connectionState == null ? false : (!Connected && !NotConnected && _connectionState.CANBusConnected));
+                                SetProperties();
                             }
                             break;
                     }
                 };
             }
         }
-        public bool PartiallyConnected
+        public Visibility PartiallyConnected
         {
-            get { return (bool) GetValue(PartiallyConnectedProperty); }
+            get { return (Visibility) GetValue(PartiallyConnectedProperty); }
+            set { SetValue(PartiallyConnectedProperty, value); }
         }
 
-        public bool Connected
+        public Visibility Connected
         {
-            get { return (bool)GetValue(ConnectedProperty); }
+            get { return (Visibility)GetValue(ConnectedProperty); }
+            set { SetValue(ConnectedProperty, value); }
         }
 
-        public bool NotConnected
+        public Visibility NotConnected
         {
-            get { return (bool)GetValue(NotConnectedProperty); }
+            get { return (Visibility)GetValue(NotConnectedProperty); }
+            set { SetValue(NotConnectedProperty, value); }
         }
     }
 }

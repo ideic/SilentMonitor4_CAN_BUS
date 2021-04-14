@@ -73,7 +73,7 @@ namespace UWPApp.DeviceManager
                                                             DeviceInformationKind.AssociationEndpoint);
 
             // Hook up handlers for the watcher events before starting the watcher
-            _deviceWatcher.Added += new TypedEventHandler<DeviceWatcher, DeviceInformation>(async (watcher, deviceInfo) =>
+            _deviceWatcher.Added += new TypedEventHandler<DeviceWatcher, DeviceInformation>((watcher, deviceInfo) =>
             {
                 // Make sure device name isn't blank
                 if (deviceInfo.Name != "" && deviceInfo.Name.StartsWith("canbussniffer"))
@@ -84,12 +84,12 @@ namespace UWPApp.DeviceManager
 
             });
 
-            _deviceWatcher.Updated += new TypedEventHandler<DeviceWatcher, DeviceInformationUpdate>(async (watcher, deviceInfoUpdate) =>
+            _deviceWatcher.Updated += new TypedEventHandler<DeviceWatcher, DeviceInformationUpdate>((watcher, deviceInfoUpdate) =>
             {
 
             });
 
-            _deviceWatcher.Stopped += new TypedEventHandler<DeviceWatcher, Object>(async (watcher, obj) =>
+            _deviceWatcher.Stopped += new TypedEventHandler<DeviceWatcher, Object>((watcher, obj) =>
             {
 
             });
