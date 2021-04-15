@@ -4,7 +4,9 @@
 #include <sstream>
 #include <fstream>
 #include <stdio.h>
-
+#include <memory>
+#include <algorithm>
+#include <utility>
 using Value = Qentem::Value<char>;
 namespace JSON= Qentem::JSON;
 using namespace std::string_literals;
@@ -54,7 +56,7 @@ WifiSetting ConfigurationManager::GetWifiSetting() const {
 
 void ConfigurationManager::SetWifiSetting(WifiSetting wifiSetting)
 {
-    _wifiSetting = wifiSetting;
+    _wifiSetting = std::move(wifiSetting);
     Value content;
  
     content["WifiHost"] = _wifiSetting.Host.c_str();
@@ -81,6 +83,12 @@ void ConfigurationManager::SetWifiSetting(WifiSetting wifiSetting)
     }
     config << contentString;
     config.close();
+
+    for (auto && subscriber : _subscribers) {
+        auto sub = subscriber.lock();
+    	if (sub)
+			(*sub)();
+    }
 }
 
 LogSetting ConfigurationManager::GetLogSetting() const {
@@ -89,4 +97,26 @@ LogSetting ConfigurationManager::GetLogSetting() const {
 
 std::string ConfigurationManager::GetWorkingDir() const {
     return _workingDir;
+}
+
+std::shared_ptr<void> ConfigurationManager::Subscribe2ConfigStateChange(std::function<void()> subscriber) {
+    std::lock_guard l(_lock);
+    std::shared_ptr<std::function<void()>> result(new std::function<void()>(std::move(subscriber)), [&](std::function<void()>* s) { delete s; Cleanup(); });
+    _subscribers.push_back(result);
+
+    return result;
+}
+
+void ConfigurationManager::UnSubscribe(std::shared_ptr<void> token) {
+    token.reset();
+}
+
+void ConfigurationManager::Cleanup()
+{
+    _subscribers.erase(
+        std::remove_if(_subscribers.begin(), _subscribers.end(),
+            [](std::weak_ptr<std::function<void()>> t) { return t.expired(); }
+        ),
+        _subscribers.end()
+    );
 }

@@ -8,12 +8,12 @@ class SilentMonitorCommunicator
 {
 	std::shared_ptr<BluetoothServer> _bluetoothServer{};
 	std::shared_ptr<ConfigurationManager> _configManager{};
-
+	std::shared_ptr<void> _configSubscribeToken;
 	std::atomic_bool _stopped{ false };
 public:
 	SilentMonitorCommunicator(std::shared_ptr<BluetoothServer> bluetoothServer, std::shared_ptr<ConfigurationManager> configManager);
 
 	void Run();
-
+	void Stop();
 };
 

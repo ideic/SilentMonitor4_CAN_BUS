@@ -1,6 +1,9 @@
 #pragma once
 #include <string>
 #include <vector>
+#include <functional>
+#include <mutex>
+#include <memory>
 
 struct WifiSetting {
 	std::string Host{};
@@ -21,6 +24,9 @@ class ConfigurationManager
 	LogSetting _logSetting{};
 	std::string _workingDir{};
 	std::string _configFilePath{};
+	std::mutex _lock{};
+	std::vector<std::weak_ptr<std::function<void()>>> _subscribers;
+	void Cleanup();
 public:
 	ConfigurationManager();
 	WifiSetting GetWifiSetting() const;
@@ -29,5 +35,8 @@ public:
 	LogSetting GetLogSetting() const;
 
 	std::string GetWorkingDir() const;
+
+	std::shared_ptr<void>  Subscribe2ConfigStateChange(std::function<void()> subscriber) ;
+	static void UnSubscribe(std::shared_ptr<void>  token);
 };
 
