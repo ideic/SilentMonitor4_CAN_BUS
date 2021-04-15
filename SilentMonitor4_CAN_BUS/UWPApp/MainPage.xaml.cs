@@ -24,8 +24,6 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-// The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
-
 namespace UWPApp
 {
     /// <summary>
@@ -136,6 +134,12 @@ namespace UWPApp
             ConnectionState.WifiHost = CANWifi.Text;
             ConnectionState.WifiPort = CANWifiPort.Text;
             _silentMonitorCommunnicator.NextState(new SaveConfigState(_silentMonitorCommunnicator, ConnectionState));
+            Settings.Flyout.Hide();
+        }
+
+        private void btnCancel_Click(object sender, RoutedEventArgs e)
+        {
+            Settings.Flyout.Hide();
         }
     }
 }

@@ -32,7 +32,10 @@ namespace UWPApp.DeviceManager.States
                 if (jsonResult["Status"].GetString() != "OK")
                 {
                     _connectionState.LastError = jsonResult["ErrorMessage"].GetString();
+                    return;
                 }
+                _communicator.NextState(new QueryDeviceState(_communicator, _connectionState));
+
             }
             catch (Exception ex)
             {
