@@ -20,8 +20,9 @@ struct BluetoothServer::SocketInfo {
     bdaddr_t _address{};
 };
 
-BluetoothServer::BluetoothServer()
+BluetoothServer::BluetoothServer(std::shared_ptr<ConfigurationManager> configManager) : _configManager(std::move(configManager))
 {
+    _configToken = configManager->Subscribe2ConfigStateChange(std::bind(&BluetoothServer::Stop, this));
     _socketInfo = std::make_shared<SocketInfo>();
 
     const int dev_id = hci_get_route(nullptr);
@@ -47,6 +48,11 @@ BluetoothServer::~BluetoothServer()
 void BluetoothServer::Stop()
 {
     _stopped = true;
+}
+
+bool BluetoothServer::IsRunning()
+{
+    return !_stopped;
 }
 
 
@@ -93,6 +99,7 @@ void BluetoothServer::Run()
             Connect();
         }
     }
+    _configManager->UnSubscribe(_configToken);
 }
 void BluetoothServer::SendCommand(const std::string & command) const {
 	const auto result = write(_socketInfo->_client, command.c_str(), command.size());

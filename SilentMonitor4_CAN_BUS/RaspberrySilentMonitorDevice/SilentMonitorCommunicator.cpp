@@ -47,3 +47,8 @@ void SilentMonitorCommunicator::Stop() {
 	_stopped = true;
 	_configManager->UnSubscribe(_configSubscribeToken);
 }
+
+bool SilentMonitorCommunicator::IsRunning()
+{
+	return !_stopped;
+}
