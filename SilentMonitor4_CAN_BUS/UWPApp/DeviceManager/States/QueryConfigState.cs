@@ -30,6 +30,7 @@ namespace UWPApp.DeviceManager.States
                 var jsonResult = JsonObject.Parse(response);
                 if (jsonResult["Status"].GetString() == "OK")
                 {
+                    _connectionState.WifiSSID = jsonResult["WifiSSID"].GetString();
                     _connectionState.WifiHost = jsonResult["WifiHost"].GetString();
                     _connectionState.WifiPort = jsonResult["WifiPort"].GetString();
                 }

@@ -59,9 +59,17 @@
                                 <StackPanel BorderThickness="1" BorderBrush="LightGray">
                                     <TextBlock Text="CAN Wifi SSID:"/>
                                     <AutoSuggestBox 
-                                        TextChanged="CANWifi_TextChanged"
-                                        SuggestionChosen="CANWifi_SuggestionChosen"
-                                        Name="CANWifi"
+                                        TextChanged="CANWifiSSID_TextChanged"
+                                        SuggestionChosen="CANWifiSSID_SuggestionChosen"
+                                        Name="CANWifiSSID"
+                                        Text="{x:Bind ConnectionState.WifiSSID, Mode=OneWay}"
+                                        Width="300"
+                                        IsEnabled="true" AllowFocusOnInteraction="True"/>
+                                    <TextBlock Text="CAN Wifi Host:"/>
+                                    <AutoSuggestBox 
+                                        TextChanged="CANWifiHost_TextChanged"
+                                        SuggestionChosen="CANWifiHost_SuggestionChosen"
+                                        Name="CANWifiHost"
                                         Text="{x:Bind ConnectionState.WifiHost, Mode=OneWay}"
                                         Width="300"
                                         IsEnabled="true" AllowFocusOnInteraction="True"/>

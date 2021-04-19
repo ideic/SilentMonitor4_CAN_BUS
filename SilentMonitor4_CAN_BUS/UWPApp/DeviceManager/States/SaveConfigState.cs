@@ -22,6 +22,7 @@ namespace UWPApp.DeviceManager.States
         {
             JsonObject jsonObject = new JsonObject();
             jsonObject["CommandType"] = JsonValue.CreateStringValue("SaveConfig");
+            jsonObject["WifiSSID"] = JsonValue.CreateStringValue(_connectionState.WifiSSID);
             jsonObject["WifiHost"] = JsonValue.CreateStringValue(_connectionState.WifiHost);
             jsonObject["WifiPort"] = JsonValue.CreateStringValue(_connectionState.WifiPort) ;
             try

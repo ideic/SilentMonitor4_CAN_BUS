@@ -10,7 +10,7 @@ class BluetoothServer : public IRunable
 	std::shared_ptr<SocketInfo> _socketInfo;
 	std::atomic_bool _stopped{ false };
 	std::shared_ptr<ConfigurationManager> _configManager;
-	std::shared_ptr<void> _configToken;
+	std::shared_ptr<void> _configToken{ nullptr };
 	void Connect();
 public:
 	BluetoothServer(std::shared_ptr<ConfigurationManager> configManager);

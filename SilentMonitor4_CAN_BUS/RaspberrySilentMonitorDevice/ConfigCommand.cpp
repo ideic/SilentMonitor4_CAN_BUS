@@ -11,10 +11,12 @@ ConfigCommand::ConfigCommand(std::shared_ptr<ConfigurationManager> configManager
 
 std::string ConfigCommand::GetConfig()
 {
+	auto wifiSetting = _configManager->GetWifiSetting();
 	Value v;
 	v["Status"] = "OK";
-	v["WifiHost"] = _configManager->GetWifiSetting().Host.c_str();
-	v["WifiPort"] = _configManager->GetWifiSetting().Port.c_str();
+	v["WifiSSID"] = wifiSetting.SSID.c_str();
+	v["WifiHost"] = wifiSetting.Host.c_str();
+	v["WifiPort"] = wifiSetting.Port.c_str();
 	v["ErrorMessage"] =  "";
 	
 	std::stringstream osstream;
@@ -22,12 +24,12 @@ std::string ConfigCommand::GetConfig()
 	return StateCommandBase::GetResponse(osstream.str());
 }
 
-std::string ConfigCommand::SetConfig(const std::string& host, const std::string& port)
+std::string ConfigCommand::SetConfig(const std::string& ssid, const std::string& host, const std::string& port)
 {
 	Value v;
 	try
 	{
-		_configManager->SetWifiSetting(WifiSetting{ host, port });
+		_configManager->SetWifiSetting(WifiSetting{ssid, host, port });
 		v["Status"] = "OK";
 		v["ErrorMessage"] = "";
 

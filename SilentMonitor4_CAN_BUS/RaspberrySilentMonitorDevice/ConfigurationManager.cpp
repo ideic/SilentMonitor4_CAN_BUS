@@ -34,6 +34,7 @@ ConfigurationManager::ConfigurationManager() {
 
        auto config = JSON::Parse(content.c_str());
        _wifiSetting.Host = config["WifiHost"].GetString()->Storage();
+       _wifiSetting.SSID = config["WifiSSID"].GetString()->Storage();
        _wifiSetting.Port = config["WifiPort"].GetString()->Storage();
        _workingDir = config["WorkingDir"].GetString()->Storage();
        std::string logsinks = config["LogSinks"].GetString()->Storage();
@@ -59,6 +60,7 @@ void ConfigurationManager::SetWifiSetting(WifiSetting wifiSetting)
     _wifiSetting = std::move(wifiSetting);
     Value content;
  
+    content["WifiSSID"] = _wifiSetting.SSID.c_str();
     content["WifiHost"] = _wifiSetting.Host.c_str();
     content["WifiPort"] = _wifiSetting.Port.c_str();
     content["WorkingDir"] = _workingDir.c_str();

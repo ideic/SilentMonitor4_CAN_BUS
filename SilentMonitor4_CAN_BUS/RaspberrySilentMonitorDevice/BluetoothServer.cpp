@@ -22,7 +22,6 @@ struct BluetoothServer::SocketInfo {
 
 BluetoothServer::BluetoothServer(std::shared_ptr<ConfigurationManager> configManager) : _configManager(std::move(configManager))
 {
-    _configToken = configManager->Subscribe2ConfigStateChange(std::bind(&BluetoothServer::Stop, this));
     _socketInfo = std::make_shared<SocketInfo>();
 
     const int dev_id = hci_get_route(nullptr);
@@ -58,7 +57,8 @@ bool BluetoothServer::IsRunning()
 
 void BluetoothServer::Run()
 {
-    //RegisterService();
+    _configToken = _configManager->Subscribe2ConfigStateChange(std::bind(&BluetoothServer::Stop, this));
+
     struct sockaddr_rc loc_addr = { 0 };
     // allocate socket
     _socketInfo->_socketId = socket(AF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM);

@@ -51,7 +51,7 @@ namespace UWPApp
 
         public ConnectionStateViewModel ConnectionState { get; set; }
 
-        private void CANWifi_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
+        private void CANWifiSSID_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
         {
             var typicalSSIDs = new List<string> { "CLKDevices" };
             var suitableItems = new List<string>();
@@ -71,13 +71,39 @@ namespace UWPApp
 
         }
 
-        private void CANWifi_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
+        private void CANWifiSSID_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
         {
             sender.Text = args.SelectedItem.ToString();
             //SuggestionOutput.Text = args.SelectedItem.ToString();
         }
 
-       
+        private void CANWifiHost_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
+        {
+            var suitableItems = new List<string>();
+            var suggestion = "";
+            var lastDigit = sender.Text;
+            if (sender.Text.Contains("."))
+            {
+                suggestion = sender.Text.Substring(0,sender.Text.LastIndexOf(".")) + ".";
+                if (!sender.Text.EndsWith("."))
+                    lastDigit = lastDigit.Substring(suggestion.LastIndexOf(".")+1);
+            }
+            int from;
+            int.TryParse(lastDigit, out from);
+            for (; from <= 255; from++)
+            {
+                suitableItems.Add(suggestion+ from.ToString("D3"));
+            }
+ 
+            sender.ItemsSource = suitableItems;
+
+        }
+
+        private void CANWifiHost_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
+        {
+            sender.Text = args.SelectedItem.ToString();
+            //SuggestionOutput.Text = args.SelectedItem.ToString();
+        }
 
         private void CANWifiPort_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
         {
@@ -106,7 +132,7 @@ namespace UWPApp
         }
         private void Flyout_Opened(object sender, object e)
         {
-            CANWifi.Focus(FocusState.Programmatic);
+            CANWifiSSID.Focus(FocusState.Programmatic);
             
         }
 
@@ -131,7 +157,8 @@ namespace UWPApp
 
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
-            ConnectionState.WifiHost = CANWifi.Text;
+            ConnectionState.WifiSSID = CANWifiSSID.Text;
+            ConnectionState.WifiHost = CANWifiHost.Text;
             ConnectionState.WifiPort = CANWifiPort.Text;
             _silentMonitorCommunnicator.NextState(new SaveConfigState(_silentMonitorCommunnicator, ConnectionState));
             Settings.Flyout.Hide();

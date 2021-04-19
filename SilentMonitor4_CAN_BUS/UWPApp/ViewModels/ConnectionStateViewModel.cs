@@ -18,6 +18,7 @@ namespace UWPApp.ViewModels
         private CoreDispatcher _dispatcher;
         private string _wifiHost;
         private string _wifiPort;
+        private string _wifiSSID;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -84,6 +85,28 @@ namespace UWPApp.ViewModels
             }
         }
 
+        public string WifiSSID
+        {
+            get
+            {
+                return _wifiSSID;
+            }
+            internal set
+            {
+                _wifiSSID = value;
+                if (!_dispatcher.HasThreadAccess)
+                {
+                    _dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                    {
+                        PropertyChanged.Invoke(this, new PropertyChangedEventArgs("WifiSSID"));
+                    }).AsTask().Wait();
+                }
+                else
+                {
+                    PropertyChanged.Invoke(this, new PropertyChangedEventArgs("WifiSSID"));
+                }
+            }
+        }
         public string WifiHost {
             get
             {

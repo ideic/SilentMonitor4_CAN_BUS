@@ -36,6 +36,7 @@ void SilentMonitorCommunicator::Run() {
 			ConfigCommand cmd(_configManager);
 			_bluetoothServer->SendCommand(
 				cmd.SetConfig(
+					reqjson["WifiSSID"].GetString()->Storage(),
 					reqjson["WifiHost"].GetString()->Storage(),
 					reqjson["WifiPort"].GetString()->Storage()));
 			continue;

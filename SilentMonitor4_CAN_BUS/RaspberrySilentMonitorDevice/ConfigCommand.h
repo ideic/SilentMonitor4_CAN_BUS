@@ -10,6 +10,6 @@ class ConfigCommand: public StateCommandBase
 public:
 	ConfigCommand(std::shared_ptr<ConfigurationManager> configManager);
 	std::string GetConfig();
-	std::string SetConfig(const std::string &host, const std::string &port);
+	std::string SetConfig(const std::string& ssid, const std::string &host, const std::string &port);
 };
 

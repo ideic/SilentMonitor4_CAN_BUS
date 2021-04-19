@@ -6,6 +6,7 @@
 #include <memory>
 
 struct WifiSetting {
+	std::string SSID{};
 	std::string Host{};
 	std::string Port{};
 };
