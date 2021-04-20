@@ -3,8 +3,7 @@
 #include <atomic>
 #include "BlockingQueue.h"
 #include "ConfigurationManager.h"
-#include "IRunable.h"
-class BluetoothServer : public IRunable
+class BluetoothServer 
 {
 	struct SocketInfo;
 	std::shared_ptr<SocketInfo> _socketInfo;
@@ -15,9 +14,8 @@ class BluetoothServer : public IRunable
 public:
 	BluetoothServer(std::shared_ptr<ConfigurationManager> configManager);
 	~BluetoothServer();
-	void Run() override;
-	void Stop() override;
-	bool IsRunning() override;
+	void Run();
+	void Stop();
 	void SendCommand(const std::string& command) const;
 	BlockingQueue<std::string> _receivedCommands;
 };

@@ -1,5 +1,4 @@
 #include "SilentMonitorCommunicator.h"
-
 #include "GetStateCommand.h"
 #include "Logger.h"
 #include "ConfigCommand.h"
@@ -47,9 +46,4 @@ void SilentMonitorCommunicator::Run() {
 void SilentMonitorCommunicator::Stop() {
 	_stopped = true;
 	_configManager->UnSubscribe(_configSubscribeToken);
-}
-
-bool SilentMonitorCommunicator::IsRunning()
-{
-	return !_stopped;
 }

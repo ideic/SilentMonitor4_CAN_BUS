@@ -71,8 +71,6 @@
     <ClCompile Include="ConfigCommand.cpp" />
     <ClCompile Include="ConfigurationManager.cpp" />
     <ClCompile Include="GetStateCommand.cpp" />
-    <ClCompile Include="GlobalComponentState.cpp" />
-    <ClCompile Include="IRunable.cpp" />
     <ClCompile Include="Logger.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="SilentMonitorCommunicator.cpp" />
@@ -85,8 +83,6 @@
     <ClInclude Include="ConfigCommand.h" />
     <ClInclude Include="ConfigurationManager.h" />
     <ClInclude Include="GetStateCommand.h" />
-    <ClInclude Include="GlobalComponentState.h" />
-    <ClInclude Include="IRunable.h" />
     <ClInclude Include="Logger.h" />
     <ClInclude Include="quentem\ALE.hpp" />
     <ClInclude Include="quentem\Array.hpp" />

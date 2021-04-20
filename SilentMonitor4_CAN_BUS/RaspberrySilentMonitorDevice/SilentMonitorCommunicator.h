@@ -3,8 +3,7 @@
 #include <memory>
 #include <atomic>
 #include "ConfigurationManager.h"
-#include "IRunable.h"
-class SilentMonitorCommunicator : public IRunable
+class SilentMonitorCommunicator
 {
 	std::shared_ptr<BluetoothServer> _bluetoothServer{};
 	std::shared_ptr<ConfigurationManager> _configManager{};
@@ -13,8 +12,7 @@ class SilentMonitorCommunicator : public IRunable
 public:
 	SilentMonitorCommunicator(std::shared_ptr<BluetoothServer> bluetoothServer, std::shared_ptr<ConfigurationManager> configManager);
 
-	void Run() override;
-	void Stop() override;
-	bool IsRunning() override;
+	void Run();
+	void Stop();
 };
 

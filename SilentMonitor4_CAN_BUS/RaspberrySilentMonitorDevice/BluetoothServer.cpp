@@ -49,12 +49,6 @@ void BluetoothServer::Stop()
     _stopped = true;
 }
 
-bool BluetoothServer::IsRunning()
-{
-    return !_stopped;
-}
-
-
 void BluetoothServer::Run()
 {
     _configToken = _configManager->Subscribe2ConfigStateChange(std::bind(&BluetoothServer::Stop, this));

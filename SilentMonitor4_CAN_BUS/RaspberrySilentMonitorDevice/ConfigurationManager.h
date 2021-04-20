@@ -28,6 +28,9 @@ class ConfigurationManager
 	std::mutex _lock{};
 	std::vector<std::weak_ptr<std::function<void()>>> _subscribers;
 	void Cleanup();
+	bool _isRestartNeeded{ false };
+	void ModifySystemWIFIConfig();
+
 public:
 	ConfigurationManager();
 	WifiSetting GetWifiSetting() const;
@@ -39,5 +42,7 @@ public:
 
 	std::shared_ptr<void>  Subscribe2ConfigStateChange(std::function<void()> subscriber) ;
 	static void UnSubscribe(std::shared_ptr<void>  token);
+
+	bool IsRestartNeeded() const;
 };
 

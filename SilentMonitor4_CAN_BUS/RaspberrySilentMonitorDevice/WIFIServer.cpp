@@ -10,8 +10,3 @@ void WIFIServer::Run()
 void WIFIServer::Stop()
 {
 }
-
-bool WIFIServer::IsRunning()
-{
-	return false;
-}

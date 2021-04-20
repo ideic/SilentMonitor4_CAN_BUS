@@ -11,6 +11,7 @@ using Value = Qentem::Value<char>;
 namespace JSON= Qentem::JSON;
 using namespace std::string_literals;
 
+
 ConfigurationManager::ConfigurationManager() {
     std::string currentPath;
 	char cwd[1024];
@@ -57,9 +58,11 @@ WifiSetting ConfigurationManager::GetWifiSetting() const {
 
 void ConfigurationManager::SetWifiSetting(WifiSetting wifiSetting)
 {
+    _isRestartNeeded = _wifiSetting.SSID != wifiSetting.SSID;
+	
     _wifiSetting = std::move(wifiSetting);
     Value content;
- 
+    
     content["WifiSSID"] = _wifiSetting.SSID.c_str();
     content["WifiHost"] = _wifiSetting.Host.c_str();
     content["WifiPort"] = _wifiSetting.Port.c_str();
@@ -86,11 +89,42 @@ void ConfigurationManager::SetWifiSetting(WifiSetting wifiSetting)
     config << contentString;
     config.close();
 
+    if (_isRestartNeeded) {
+        ModifySystemWIFIConfig();
+    }
+	
     for (auto && subscriber : _subscribers) {
         auto sub = subscriber.lock();
     	if (sub)
 			(*sub)();
     }
+}
+void ConfigurationManager::ModifySystemWIFIConfig() {
+    std::string configTemplate = R"(
+# interfaces(5) file used by ifup(8) and ifdown(8)
+
+# Please note that this file is written to be used with dhcpcd
+# For static IP, consult /etc/dhcpcd.conf and 'man dhcpcd.conf'
+
+# Include files from /etc/network/interfaces.d:
+source-directory /etc/network/interfaces.d
+auto wlan0
+iface wlan0 inet dhcp
+                wpa-ssid "#SSID#"
+#               wpa-psk "matternhorn1A"
+auto eth0
+iface eth0 inet dhcp
+)";
+    std::ofstream config{};
+    config.open("/etc/network/interfaces", std::ios_base::trunc);
+    if (!config.is_open()) {
+        char err[1024];
+        perror(err);
+        throw std::runtime_error("Error cannot open config file /etc/network/interfaces error: "s + std::string(err));
+    }
+    
+    config << configTemplate.replace(configTemplate.find("#SSID#"s), "#SSID#"s.size(), _wifiSetting.SSID);
+    config.close();
 }
 
 LogSetting ConfigurationManager::GetLogSetting() const {
@@ -111,6 +145,10 @@ std::shared_ptr<void> ConfigurationManager::Subscribe2ConfigStateChange(std::fun
 
 void ConfigurationManager::UnSubscribe(std::shared_ptr<void> token) {
     token.reset();
+}
+
+bool ConfigurationManager::IsRestartNeeded() const {
+    return _isRestartNeeded;
 }
 
 void ConfigurationManager::Cleanup()

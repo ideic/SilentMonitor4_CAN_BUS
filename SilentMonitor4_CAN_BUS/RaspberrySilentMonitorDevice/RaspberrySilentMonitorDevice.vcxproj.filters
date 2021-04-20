@@ -16,8 +16,6 @@
     </ClCompile>
     <ClCompile Include="ConfigurationManager.cpp" />
     <ClCompile Include="WIFIServer.cpp" />
-    <ClCompile Include="GlobalComponentState.cpp" />
-    <ClCompile Include="IRunable.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BlockingQueue.h" />
@@ -86,8 +84,6 @@
       <Filter>Quentem</Filter>
     </ClInclude>
     <ClInclude Include="WIFIServer.h" />
-    <ClInclude Include="GlobalComponentState.h" />
-    <ClInclude Include="IRunable.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="bluetooth_init.sh" />
