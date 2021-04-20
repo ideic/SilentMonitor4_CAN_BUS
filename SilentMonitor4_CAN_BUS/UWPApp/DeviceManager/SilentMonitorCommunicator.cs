@@ -94,7 +94,7 @@ namespace UWPApp.DeviceManager
 
             });
 
-            if (!_connectionState.CANBusConnected)
+           // if (!_connectionState.CANBusConnected)
             {
                 _deviceWatcher.Start();
             }

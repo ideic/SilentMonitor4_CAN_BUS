@@ -51,7 +51,11 @@ void BluetoothServer::Stop()
 
 void BluetoothServer::Run()
 {
-    _configToken = _configManager->Subscribe2ConfigStateChange(std::bind(&BluetoothServer::Stop, this));
+    _configToken = _configManager->Subscribe2ConfigStateChange([this]() 
+        {
+            if (_configManager->IsRestartNeeded()) 
+                Stop(); 
+        });
 
     struct sockaddr_rc loc_addr = { 0 };
     // allocate socket

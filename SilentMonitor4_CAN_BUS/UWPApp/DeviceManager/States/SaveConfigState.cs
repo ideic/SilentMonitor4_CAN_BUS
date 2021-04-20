@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using UWPApp.ViewModels;
 using Windows.Data.Json;
@@ -30,13 +31,17 @@ namespace UWPApp.DeviceManager.States
                 var response = _communicator.Send(jsonObject.Stringify());
 
                 var jsonResult = JsonObject.Parse(response);
+                if (jsonResult["Status"].GetString() == "Restart")
+                {
+                    Thread.Sleep(TimeSpan.FromSeconds(5));
+                    _communicator.InitBluetoothDeviceConnection();
+                    return;
+                }
                 if (jsonResult["Status"].GetString() != "OK")
                 {
                     _connectionState.LastError = jsonResult["ErrorMessage"].GetString();
                     return;
                 }
-                _communicator.NextState(new QueryDeviceState(_communicator, _connectionState));
-
             }
             catch (Exception ex)
             {

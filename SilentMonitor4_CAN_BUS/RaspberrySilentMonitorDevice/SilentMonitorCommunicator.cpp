@@ -13,7 +13,11 @@ SilentMonitorCommunicator::SilentMonitorCommunicator(
 	: _bluetoothServer(std::move(bluetoothServer))
 	, _configManager(std::move(configManager))
 {
-	_configSubscribeToken = _configManager->Subscribe2ConfigStateChange(std::bind(&SilentMonitorCommunicator::Stop, this));
+	_configSubscribeToken = _configManager->Subscribe2ConfigStateChange([this]()
+		{
+			if (_configManager->IsRestartNeeded())
+				Stop();
+		});
 }
 
 void SilentMonitorCommunicator::Run() {
