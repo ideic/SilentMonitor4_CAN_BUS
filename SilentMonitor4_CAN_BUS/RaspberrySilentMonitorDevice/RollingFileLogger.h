@@ -10,6 +10,9 @@ class RollingFileLogger: public ILogSink
 	std::optional<uint8_t> _currentIndex;
 	std::ofstream _currentFile{};
 	uint16_t _lines;
+	void LogMessage(const std::string& message);
+	std::string GetDateTime();
+	std::mutex _lock;
 public:
 	RollingFileLogger(std::string workingDir);
 	~RollingFileLogger();

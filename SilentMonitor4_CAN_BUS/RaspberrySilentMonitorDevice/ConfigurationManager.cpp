@@ -24,6 +24,7 @@ ConfigurationManager::ConfigurationManager() {
    config.open(_configFilePath);
    if (!config.is_open()) {
        _workingDir = currentPath;
+       _logSetting.LogSinks.push_back(LogSinkType::Console);
    }
    else {
        std::string content;
@@ -111,7 +112,7 @@ source-directory /etc/network/interfaces.d
 auto wlan0
 iface wlan0 inet dhcp
                 wpa-ssid "#SSID#"
-#               wpa-psk "matternhorn1A"
+#               wpa-psk ""
 auto eth0
 iface eth0 inet dhcp
 )";

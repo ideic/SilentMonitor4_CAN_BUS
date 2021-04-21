@@ -3,8 +3,7 @@
 #include "ConsoleLogger.h"
 #include "RollingFileLogger.h"
 using namespace std::string_literals;
-Logger logger;
-
+static Logger _logger;
 void Logger::InitLogger(const std::shared_ptr<ConfigurationManager>& configManager) {
 	for (auto && sink : configManager->GetLogSetting().LogSinks) {
 		if (sink == LogSinkType::Console) {

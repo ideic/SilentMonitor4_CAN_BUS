@@ -8,7 +8,6 @@
 class Logger
 {
 	std::vector<std::unique_ptr<ILogSink>> _loggerList{};
-	static Logger _logger;
 public:
 	static void InitLogger(const std::shared_ptr<ConfigurationManager>& configManager);
 	static void Info(const std::string &message);
