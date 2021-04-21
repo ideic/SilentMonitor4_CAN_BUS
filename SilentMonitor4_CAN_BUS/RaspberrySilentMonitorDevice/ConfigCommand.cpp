@@ -30,7 +30,7 @@ std::string ConfigCommand::SetConfig(const std::string& ssid, const std::string&
 	try
 	{
 		_configManager->SetWifiSetting(WifiSetting{ssid, host, port });
-		v["Status"] = "OK";
+		v["Status"] = _configManager->IsRestartNeeded() ? "Restart" : "OK";
 		v["ErrorMessage"] = "";
 
 	}
