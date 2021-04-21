@@ -3,10 +3,13 @@
 #include "SilentMonitorCommunicator.h"
 #include "ConfigurationManager.h"
 #include "WIFIServer.h"
+#include "Logger.h"
 
 int main(void){
     std::shared_ptr configManager = std::make_shared<ConfigurationManager>();
-  
+
+    Logger::InitLogger(configManager);
+	
     std::shared_ptr<BluetoothServer> bsserver = std::make_shared<BluetoothServer>(configManager);
     std::thread _bsServerThread([&bsserver]() { bsserver->Run(); });
  

@@ -11,13 +11,13 @@ struct WifiSetting {
 	std::string Port{};
 };
 
-enum class LogSink
+enum class LogSinkType
 {
 	Console,
 	File
 };
 struct LogSetting {
-	std::vector<LogSink> LogSinks;
+	std::vector<LogSinkType> LogSinks;
 };
 class ConfigurationManager
 {

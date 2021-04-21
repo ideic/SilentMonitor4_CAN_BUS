@@ -42,9 +42,9 @@ ConfigurationManager::ConfigurationManager() {
        while (logsinks.length() > 0) {
            const std::string sink = logsinks.substr(0, logsinks.find_first_of(';'));
            if (sink == "console"s)
-               _logSetting.LogSinks.push_back(LogSink::Console);
+               _logSetting.LogSinks.push_back(LogSinkType::Console);
            else
-               _logSetting.LogSinks.push_back(LogSink::File);
+               _logSetting.LogSinks.push_back(LogSinkType::File);
 
            logsinks = logsinks.substr(logsinks.find_first_of(';') + 1);
        }
@@ -69,7 +69,7 @@ void ConfigurationManager::SetWifiSetting(WifiSetting wifiSetting)
     content["WorkingDir"] = _workingDir.c_str();
     std::string sinks;
     for (auto&& sink : _logSetting.LogSinks) {
-        sinks += (sink == LogSink::Console ? "console" : "file") + ";"s;
+        sinks += (sink == LogSinkType::Console ? "console" : "file") + ";"s;
     }
 
     content["LogSinks"] = sinks.c_str();
