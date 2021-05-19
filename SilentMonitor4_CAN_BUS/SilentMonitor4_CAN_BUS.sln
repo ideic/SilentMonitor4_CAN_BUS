@@ -5,12 +5,28 @@ VisualStudioVersion = 16.0.31105.61
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RaspberrySilentMonitorDevice", "RaspberrySilentMonitorDevice\RaspberrySilentMonitorDevice.vcxproj", "{EFF7BB7E-27C4-4C98-A2C9-AB0E300A5CAA}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DirectOBDAdapterCoonectionApp", "DirectOBDAdapterCoonectionApp\DirectOBDAdapterCoonectionApp.vcxproj", "{00DAB373-C260-4330-9A52-7EC615A58CB7}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XabaNetworkLib", "XabaNetworkLib\XabaNetworkLib.vcxproj", "{E51D4598-A205-4B58-9220-F57395A3B746}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XabaUtilityMultiPlatform", "XabaUtilityMultiPlatform\XabaUtilityMultiPlatform.vcxitems", "{77980ACC-881E-4173-B9DD-DC7AF0BB257C}"
+EndProject
 Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		XabaUtilityMultiPlatform\XabaUtilityMultiPlatform.vcxitems*{00dab373-c260-4330-9a52-7ec615a58cb7}*SharedItemsImports = 4
+		XabaUtilityMultiPlatform\XabaUtilityMultiPlatform.vcxitems*{77980acc-881e-4173-b9dd-dc7af0bb257c}*SharedItemsImports = 9
+		XabaUtilityMultiPlatform\XabaUtilityMultiPlatform.vcxitems*{e51d4598-a205-4b58-9220-f57395a3b746}*SharedItemsImports = 4
+		XabaUtilityMultiPlatform\XabaUtilityMultiPlatform.vcxitems*{eff7bb7e-27c4-4c98-a2c9-ab0e300a5caa}*SharedItemsImports = 4
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM = Debug|ARM
 		Debug|ARM64 = Debug|ARM64
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
 		Release|ARM = Release|ARM
 		Release|ARM64 = Release|ARM64
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{EFF7BB7E-27C4-4C98-A2C9-AB0E300A5CAA}.Debug|ARM.ActiveCfg = Debug|ARM
@@ -19,12 +35,40 @@ Global
 		{EFF7BB7E-27C4-4C98-A2C9-AB0E300A5CAA}.Debug|ARM64.ActiveCfg = Debug|ARM64
 		{EFF7BB7E-27C4-4C98-A2C9-AB0E300A5CAA}.Debug|ARM64.Build.0 = Debug|ARM64
 		{EFF7BB7E-27C4-4C98-A2C9-AB0E300A5CAA}.Debug|ARM64.Deploy.0 = Debug|ARM64
+		{EFF7BB7E-27C4-4C98-A2C9-AB0E300A5CAA}.Debug|x64.ActiveCfg = Debug|ARM
+		{EFF7BB7E-27C4-4C98-A2C9-AB0E300A5CAA}.Debug|x86.ActiveCfg = Debug|ARM
 		{EFF7BB7E-27C4-4C98-A2C9-AB0E300A5CAA}.Release|ARM.ActiveCfg = Release|ARM
 		{EFF7BB7E-27C4-4C98-A2C9-AB0E300A5CAA}.Release|ARM.Build.0 = Release|ARM
 		{EFF7BB7E-27C4-4C98-A2C9-AB0E300A5CAA}.Release|ARM.Deploy.0 = Release|ARM
 		{EFF7BB7E-27C4-4C98-A2C9-AB0E300A5CAA}.Release|ARM64.ActiveCfg = Release|ARM64
 		{EFF7BB7E-27C4-4C98-A2C9-AB0E300A5CAA}.Release|ARM64.Build.0 = Release|ARM64
 		{EFF7BB7E-27C4-4C98-A2C9-AB0E300A5CAA}.Release|ARM64.Deploy.0 = Release|ARM64
+		{EFF7BB7E-27C4-4C98-A2C9-AB0E300A5CAA}.Release|x64.ActiveCfg = Release|ARM
+		{EFF7BB7E-27C4-4C98-A2C9-AB0E300A5CAA}.Release|x86.ActiveCfg = Release|ARM
+		{00DAB373-C260-4330-9A52-7EC615A58CB7}.Debug|ARM.ActiveCfg = Debug|Win32
+		{00DAB373-C260-4330-9A52-7EC615A58CB7}.Debug|ARM64.ActiveCfg = Debug|Win32
+		{00DAB373-C260-4330-9A52-7EC615A58CB7}.Debug|x64.ActiveCfg = Debug|x64
+		{00DAB373-C260-4330-9A52-7EC615A58CB7}.Debug|x64.Build.0 = Debug|x64
+		{00DAB373-C260-4330-9A52-7EC615A58CB7}.Debug|x86.ActiveCfg = Debug|Win32
+		{00DAB373-C260-4330-9A52-7EC615A58CB7}.Debug|x86.Build.0 = Debug|Win32
+		{00DAB373-C260-4330-9A52-7EC615A58CB7}.Release|ARM.ActiveCfg = Release|Win32
+		{00DAB373-C260-4330-9A52-7EC615A58CB7}.Release|ARM64.ActiveCfg = Release|Win32
+		{00DAB373-C260-4330-9A52-7EC615A58CB7}.Release|x64.ActiveCfg = Release|x64
+		{00DAB373-C260-4330-9A52-7EC615A58CB7}.Release|x64.Build.0 = Release|x64
+		{00DAB373-C260-4330-9A52-7EC615A58CB7}.Release|x86.ActiveCfg = Release|Win32
+		{00DAB373-C260-4330-9A52-7EC615A58CB7}.Release|x86.Build.0 = Release|Win32
+		{E51D4598-A205-4B58-9220-F57395A3B746}.Debug|ARM.ActiveCfg = Debug|Win32
+		{E51D4598-A205-4B58-9220-F57395A3B746}.Debug|ARM64.ActiveCfg = Debug|Win32
+		{E51D4598-A205-4B58-9220-F57395A3B746}.Debug|x64.ActiveCfg = Debug|x64
+		{E51D4598-A205-4B58-9220-F57395A3B746}.Debug|x64.Build.0 = Debug|x64
+		{E51D4598-A205-4B58-9220-F57395A3B746}.Debug|x86.ActiveCfg = Debug|Win32
+		{E51D4598-A205-4B58-9220-F57395A3B746}.Debug|x86.Build.0 = Debug|Win32
+		{E51D4598-A205-4B58-9220-F57395A3B746}.Release|ARM.ActiveCfg = Release|Win32
+		{E51D4598-A205-4B58-9220-F57395A3B746}.Release|ARM64.ActiveCfg = Release|Win32
+		{E51D4598-A205-4B58-9220-F57395A3B746}.Release|x64.ActiveCfg = Release|x64
+		{E51D4598-A205-4B58-9220-F57395A3B746}.Release|x64.Build.0 = Release|x64
+		{E51D4598-A205-4B58-9220-F57395A3B746}.Release|x86.ActiveCfg = Release|Win32
+		{E51D4598-A205-4B58-9220-F57395A3B746}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

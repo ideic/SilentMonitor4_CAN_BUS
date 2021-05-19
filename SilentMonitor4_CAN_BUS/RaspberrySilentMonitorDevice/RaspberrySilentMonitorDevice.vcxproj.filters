@@ -29,7 +29,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BlockingQueue.h" />
     <ClInclude Include="BluetoothServer.h" />
     <ClInclude Include="GetStateCommand.h">
       <Filter>Commands</Filter>
