@@ -31,13 +31,14 @@ public:
 		auto obdAnswer = std::find_if(begin(_obdAnswers), end(_obdAnswers), [this](auto& triple) {
 			std::string atcode, obdcode, answer;
 			std::tie(atcode, obdcode, answer) = triple;
-		return atcode == _sentATData && _sentOBDData == obdcode;
+			return atcode == _sentATData && _sentOBDData == obdcode;
 		});
 
 		if (obdAnswer != end(_obdAnswers)) {
 			auto [atcode, obdcode, answer] = *obdAnswer;
 			return std::vector<uint8_t>(begin(answer), end(answer));
 		}
+		return {};
 	}
 	void SendData(std::string_view message) override {
 		if (message._Starts_with("AT")) {
@@ -80,7 +81,7 @@ TEST(ELM327CommunicatorTest, ConnectFindsISO99412) {
 			{"ATSP1\r"s, "0100\r"s, "NODATA\r\r>"s},
 			{"ATSP2\r"s, "0100\r"s, "NODATA\r\r>"s},
 			{"ATSP3\r"s, "0100\r"s, "NODATA\r\r>"s},
-			{"ATIB96\r"s, "0100\r"s, "0100\r4100983B8011\r\r>"s},
+			{"ATIB96\r"s, "0100\r"s, "0100\r410000000000\r\r>"s},
 
 		});
 
@@ -89,7 +90,7 @@ TEST(ELM327CommunicatorTest, ConnectFindsISO99412) {
 	EXPECT_NO_THROW( device.Connect());
 }
 
-TEST(ELM327CommunicatorTest, ReadCodesThat0100GivesBack) {
+TEST(ELM327CommunicatorTest, ReadLiveCodes) {
 	std::shared_ptr<TCPClientMock> tcpMock = std::make_shared<TCPClientMock>(""s, ""s);
 	tcpMock->SetATAnswers(
 		{
@@ -111,7 +112,7 @@ TEST(ELM327CommunicatorTest, ReadCodesThat0100GivesBack) {
 			{"ATSPA\r"s, "ATSPA\rOK\r\r>"s},
 			{"ATIB96\r"s, "ATIB96\rOK\r\r>"s},
 			{"ATIB48\r"s, "ATIB48\rOK\r\r>"s},
-
+			{"ATDP\r"s, "ATDP\rISO9941_2\r\r>"s},
 		});
 	tcpMock->SetOBDAnswers(
 		{
@@ -120,21 +121,61 @@ TEST(ELM327CommunicatorTest, ReadCodesThat0100GivesBack) {
 			{"ATSP2\r"s, "0100\r"s, "NODATA\r\r>"s},
 			{"ATSP3\r"s, "0100\r"s, "NODATA\r\r>"s},
 			{"ATIB96\r"s, "0100\r"s, "0100\r4100983B8011\r\r>"s},
-
+			{"ATDP\r"s, "0101\r"s, "0101\r410101020304\r\r>"s},
+			{"ATDP\r"s, "0104\r"s, "0104\r410410\r\r>"s},
+			{"ATDP\r"s, "0105\r"s, "0105\r410520\r\r>"s},
+			{"ATDP\r"s, "010B\r"s, "010B\r410B10\r\r>"s},
+			{"ATDP\r"s, "010C\r"s, "010B\r410C0E18\r\r>"s},
+			{"ATDP\r"s, "010D\r"s, "010D\r410D0E\r\r>"s},
+			{"ATDP\r"s, "0110\r"s, "0110\r41100FAA\r\r>"s},
+			{"ATDP\r"s, "010F\r"s, "010F\r410F20\r\r>"s},
+			{"ATDP\r"s, "0111\r"s, "0111\r411130\r\r>"s},
+			{"ATDP\r"s, "011C\r"s, "011C\r411C03\r\r>"s},
+			{"ATDP\r"s, "0120\r"s, "0120\r412080000000\r\r>"s},
+			{"ATDP\r"s, "0121\r"s, "0121\r41210101\r\r>"s},
 		});
 
 	ELM327Communicator device(tcpMock);
 
 	EXPECT_NO_THROW(device.Connect());
-	auto codeValues= device.ReadCodesValues();
+	auto codeValues= device.ReadLiveCodesValues();
 
-	EXPECT_EQ(codeValues.size(), 11);
+	EXPECT_EQ(codeValues.size(), 12);
 
 	EXPECT_EQ(codeValues[0].first, "01"s); 
-	EXPECT_EQ(codeValues[0].second, ""s );
-	és így tovább;
+	EXPECT_EQ(codeValues[0].second, "01020304"s );
 
+	EXPECT_EQ(codeValues[1].first, "04"s);
+	EXPECT_EQ(codeValues[1].second, "10"s);
 
+	EXPECT_EQ(codeValues[2].first, "05"s);
+	EXPECT_EQ(codeValues[2].second, "20"s);
 
+	EXPECT_EQ(codeValues[3].first, "0B"s);
+	EXPECT_EQ(codeValues[3].second, "10"s);
+
+	EXPECT_EQ(codeValues[4].first, "0C"s);
+	EXPECT_EQ(codeValues[4].second, "0E18"s);
+
+	EXPECT_EQ(codeValues[5].first, "0D"s);
+	EXPECT_EQ(codeValues[5].second, "0E"s);
+
+	EXPECT_EQ(codeValues[6].first, "0F"s);
+	EXPECT_EQ(codeValues[6].second, "20"s);
+
+	EXPECT_EQ(codeValues[7].first, "10"s);
+	EXPECT_EQ(codeValues[7].second, "0FAA"s);
+
+	EXPECT_EQ(codeValues[8].first, "11"s);
+	EXPECT_EQ(codeValues[8].second, "30"s);
+
+	EXPECT_EQ(codeValues[9].first, "1C"s);
+	EXPECT_EQ(codeValues[9].second, "03"s);
+
+	EXPECT_EQ(codeValues[10].first, "20"s);
+	EXPECT_EQ(codeValues[10].second, "80000000"s);
+
+	EXPECT_EQ(codeValues[11].first, "21"s);
+	EXPECT_EQ(codeValues[11].second, "0101"s);
 }
 

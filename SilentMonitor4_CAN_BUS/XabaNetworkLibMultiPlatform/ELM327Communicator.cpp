@@ -32,9 +32,22 @@ const std::string OBDCommands::Code_01_ShowCurrentData = "01"s;
 
 struct OBDPIDs {
 	static const std::string Code_00_SupportedPIDS;
+	static const std::string Code_20_SupportedPIDS;
+	static const std::string Code_40_SupportedPIDS;
+	static const std::string Code_60_SupportedPIDS;
+	static const std::string Code_80_SupportedPIDS;
+	static const std::string Code_A0_SupportedPIDS;
+	static const std::string Code_C0_SupportedPIDS;
+	static const std::string Code_E0_SupportedPIDS;
 };
 const std::string OBDPIDs::Code_00_SupportedPIDS = "00"s;
-
+const std::string OBDPIDs::Code_20_SupportedPIDS = "20"s;
+const std::string OBDPIDs::Code_40_SupportedPIDS = "40"s;
+const std::string OBDPIDs::Code_60_SupportedPIDS = "60"s;
+const std::string OBDPIDs::Code_80_SupportedPIDS = "80"s;
+const std::string OBDPIDs::Code_A0_SupportedPIDS = "A0"s;
+const std::string OBDPIDs::Code_C0_SupportedPIDS = "C0"s;
+const std::string OBDPIDs::Code_E0_SupportedPIDS = "E0"s;
 
 enum class OBDProtocols :uint8_t {
 	Automatic = 0,
@@ -163,29 +176,49 @@ void ELM327Communicator::Connect(){
 			++retry;
 		}
 	}
+	_supportedPins.clear();
 
-	SetSupportedPINs(supportedPINs);
+	SetSupportedPID(supportedPINs.substr("0100 4100"s.length(), 8), 0x00);
+
+	SetSupportedPIDs({ "20"s, "40"s, "60"s,"80"s, "A0"s, "C0"s,"E0"s });
 }
 
-void ELM327Communicator::SetSupportedPINs(std::string_view supportedPINSAnswer) {
-	auto pins_01_20 = supportedPINSAnswer.substr("0100 4100"s.length(), 8);
-	auto pinMask = std::stoul(std::string(pins_01_20), nullptr, 16);
+void ELM327Communicator::SetSupportedPIDs(std::vector<std::string> pidQueryCodes) {
+	for (auto queryCode : pidQueryCodes) {
+		auto found = std::find_if(begin(_supportedPins), end(_supportedPins), [&queryCode](const std::string& pin) {
+			return pin == queryCode;
+			});
+		if (found != end(_supportedPins)) {
+			auto supportedPID = SendCode(OBDCommands::Code_01_ShowCurrentData + OBDPIDs::Code_20_SupportedPIDS).Log().ResponseValue();
+			SetSupportedPID(supportedPID.substr("01XX 41XX"s.length(), 8), std::stoul(queryCode, nullptr, 16));
+		}
+	}
+}
+void ELM327Communicator::SetSupportedPID(std::string_view availablePIDs, uint16_t offset) {
+	auto pinMask = std::stoul(std::string(availablePIDs), nullptr, 16);
 
 	for (int i = 31 ; i >=0; i--) {
 		uint32_t mask{ 1 };
 		mask = mask << i;
 		if ((pinMask & mask) == mask) {
 			std::stringstream pinCode;
-			pinCode << std::uppercase << std::setfill('0') << std::setw(2) << std::right<< std::hex << (32 - i);
+			pinCode << std::uppercase << std::setfill('0') << std::setw(2) << std::right<< std::hex << (32 - i) + offset;
 			_supportedPins.push_back(pinCode.str());
 		}
 	}
 }
 
-std::vector<std::pair<std::string, std::string>> ELM327Communicator::ReadCodesValues() {
+std::vector<std::pair<std::string, std::string>> ELM327Communicator::ReadLiveCodesValues() {
 	std::vector<std::pair<std::string, std::string>> result;
 	for (auto& pin : _supportedPins) {
-		result.emplace_back(pin, SendCode(OBDCommands::Code_01_ShowCurrentData + pin).ResponseValue());
+		auto codeValue = SendCode(OBDCommands::Code_01_ShowCurrentData + pin).ResponseValue();
+		if (codeValue.find("NODATA"s) != std::string::npos) {
+			result.emplace_back(pin, "NODATA"s);
+		}
+		else {
+			auto answerlength = "01XX 41XX"s.length();
+			result.emplace_back(pin, codeValue.substr(answerlength, codeValue.length() - (answerlength + 3)));
+		}
 	}
 
 	return result;

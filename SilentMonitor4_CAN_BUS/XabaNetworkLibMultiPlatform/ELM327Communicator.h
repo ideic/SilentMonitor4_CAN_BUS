@@ -21,12 +21,12 @@ class ELM327Communicator
 	
 	CodeEntity SendCode(std::string code);
 	void GetNextProtocol(uint16_t& protocolNumber);
-	void SetSupportedPINs(std::string_view supportedPINSAnswer);
-
+	void SetSupportedPID(std::string_view supportedPINSAnswer, uint16_t offset);
+	void SetSupportedPIDs(std::vector<std::string> pidQueryCodes);
 public:
 	ELM327Communicator(std::shared_ptr<TCPClient> networkHandler);
 	void Connect();
-	std::vector<std::pair<std::string, std::string>> ReadCodesValues();
+	std::vector<std::pair<std::string, std::string>> ReadLiveCodesValues();
 
 };
 
