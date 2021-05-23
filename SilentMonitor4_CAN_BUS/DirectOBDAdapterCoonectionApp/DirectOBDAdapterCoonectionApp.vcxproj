@@ -57,6 +57,7 @@
   </ImportGroup>
   <ImportGroup Label="Shared">
     <Import Project="..\XabaUtilityMultiPlatform\XabaUtilityMultiPlatform.vcxitems" Label="Shared" />
+    <Import Project="..\XabaNetworkLibMultiPlatform\XabaNetworkLibMultiPlatform.vcxitems" Label="Shared" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
@@ -90,6 +91,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)XabaNetworkLib\;$(SolutionDir)XabaUtility\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -104,6 +106,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -143,11 +146,6 @@
   <ItemGroup>
     <ClCompile Include="DirectOBDAdapterCoonectionApp.cpp" />
     <ClCompile Include="FileWriter.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\XabaNetworkLib\XabaNetworkLib.vcxproj">
-      <Project>{e51d4598-a205-4b58-9220-f57395a3b746}</Project>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DirectOBDAdapterCoonectionApp.h" />

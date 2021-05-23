@@ -7,6 +7,9 @@
 #include <TCPClient.h>
 #include "DirectOBDAdapterCoonectionApp.h"
 #include <DirectOBDAdapterCoonectionApp/FileWriter.h>
+
+using namespace std::string_literals;
+
 class InputParser {
 public:
 	InputParser(int& argc, char** argv) {
@@ -52,8 +55,24 @@ int main(int argc, char* argv[])
 	tcp.Start();
 
 	while (true) {
-		auto data = tcp.ReceiveData();
-		writer.Write(data);
+		try {
+			std::string input;
+			std::cout << "Command ?:" << std::endl;
+			std::getline(std::cin, input);
+			tcp.SendData(input + "\r"s);
+			auto data = tcp.ReceiveData();
+			for (auto &charItem : data)
+			{
+				if (charItem == 0xd || charItem == 0x3e) {
+					charItem = 0x20;
+				}
+			}
+			std::cout << std::string((char*)data.data(), data.size()) << std::endl;
+		}
+		catch (const std::exception& e) {
+			std::cerr << e.what() << std::endl;
+			break;
+		}
 	}
 
 }

@@ -8,6 +8,7 @@
 #define MY_SOCKET_ERROR SOCKET_ERROR
 #define MY_GET_LAST_ERROR WSAGetLastError()
 #define MY_GET_ERROR_MESSAGE GetErrorMessage
+#define INIT_SOCKET InitSocketCommunicaiton()
 #endif
 #ifdef LINUX
 #include <sys/socket.h>
@@ -17,14 +18,16 @@
 #define MY_SOCKET_ERROR SOCKET_ERROR  -1
 #define MY_GET_LAST_ERROR errno
 #define MY_GET_ERROR_MESSAGE strerror
+#define INIT_SOCKET ;
 #endif // LINUX
+#include <iostream>
 using namespace std::string_literals;
 
 std::string GetErrorMessage(int systemtErrorCode)
 {
     char* message;
     auto msgLength = FormatMessageA(
-        FORMAT_MESSAGE_FROM_SYSTEM,
+        FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_FROM_HMODULE,
         NULL,
         systemtErrorCode,
         MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
@@ -36,6 +39,13 @@ std::string GetErrorMessage(int systemtErrorCode)
     return std::string(message, msgLength);
 }
 
+void InitSocketCommunicaiton() {
+    WSADATA wsaData = { 0 };
+    auto iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
+    if (iResult != 0) {
+        throw std::runtime_error("Error at WSA Init"s + std::to_string(iResult));
+    }
+}
 
 struct TCPClient::SocketInfo {
     SOCKET socketId{ MY_INVALID_SOCKET };
@@ -46,29 +56,28 @@ TCPClient::TCPClient(std::string host, std::string port): _host(host), _port(por
 }
 
 TCPClient::~TCPClient(){
-    if (_socketInfo->socketId != -1)
-        closesocket(_socketInfo->socketId);
+     closesocket(_socketInfo->socketId);
 }
 
-void TCPClient::Start(){
-	_workerThread = std::thread(std::bind(&TCPClient::Core, this));
-}
-
-void TCPClient::Stop(){
-	_stopped = true;
-}
 
 std::vector<uint8_t> TCPClient::ReceiveData()
 {
-    return _queue.getNext();
+    std::vector<uint8_t> buff(4096);
+    auto readByte = recv(_socketInfo->socketId, (char*)buff.data(), buff.size(), 0);
+    buff.resize(readByte);
+    return buff;
 }
 
-void TCPClient::Core() {
-    
+void TCPClient::SendData(std::string_view message){
+    auto res = send(_socketInfo->socketId, message.data(), message.length(), 0);
+}
+
+void TCPClient::Connect() {
+    INIT_SOCKET;
     struct sockaddr_in servaddr {};
 
     // socket create and varification
-    _socketInfo->socketId = socket(AF_INET, SOCK_STREAM, 0);
+    _socketInfo->socketId = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (_socketInfo->socketId == MY_INVALID_SOCKET) {
         auto error = MY_GET_LAST_ERROR;
         throw std::runtime_error("TCP Socket Init failed:"s + std::to_string(error) + " Reason: "s + MY_GET_ERROR_MESSAGE(error));
@@ -85,16 +94,5 @@ void TCPClient::Core() {
         auto error = MY_GET_LAST_ERROR;
         throw std::runtime_error("TCP Connect failed:"s + std::to_string(error) + " Reason: "s + MY_GET_ERROR_MESSAGE(error));
     }
- 
-    // close the socket
-	while (!_stopped) {
-        std::vector<uint8_t> buff(4096);
-        auto readByte = recv(_socketInfo->socketId, (char*)buff.data(), buff.size(), 0);
-        buff.resize(readByte);
-        _queue.push(std::move(buff));
-	}
-
-    closesocket(_socketInfo->socketId);
-    _socketInfo->socketId = -1;
 }
 
