@@ -138,7 +138,7 @@ TEST(ELM327CommunicatorTest, ReadLiveCodes) {
 	ELM327Communicator device(tcpMock);
 
 	EXPECT_NO_THROW(device.Connect());
-	auto codeValues= device.ReadLiveCodesValues();
+	auto codeValues= device.ReadLiveCodeValues();
 
 	EXPECT_EQ(codeValues.size(), 12);
 

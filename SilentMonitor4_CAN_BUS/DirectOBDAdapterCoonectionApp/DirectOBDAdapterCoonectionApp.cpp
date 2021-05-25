@@ -6,8 +6,9 @@
 #include <vector>
 #include <TCPClient.h>
 #include "DirectOBDAdapterCoonectionApp.h"
-#include <DirectOBDAdapterCoonectionApp/FileWriter.h>
-
+#include "FileWriter.h"
+#include <ELM327Communicator.h>
+#include <DateTimeProvider.h>
 using namespace std::string_literals;
 
 class InputParser {
@@ -32,27 +33,8 @@ public:
 private:
 	std::vector <std::string> tokens;
 };
-
-int main(int argc, char* argv[])
-{
-    std::cout << "Hello!\n";
-	for (int i = 0; i < argc; i++)
-		std::cout << "Param" << i << ":" << argv[i] << std::endl;
-
-	InputParser parser(argc, argv);
-
-	// Validate the parameters
-	if (argc != 5) {
-		std::cout << "usage: --host [HOST IP] --port [PORT] \n";
-		return 1;
-	}
-
-	std::string host = parser.getCmdOption("--host");
-	std::string port = parser.getCmdOption("--port");
-
+void TerminalMode(const std::string& host, const std::string& port) {
 	TCPClient tcp(host, port);
-	FileWriter writer("receivedata.log");
-	tcp.Start();
 
 	while (true) {
 		try {
@@ -61,7 +43,7 @@ int main(int argc, char* argv[])
 			std::getline(std::cin, input);
 			tcp.SendData(input + "\r"s);
 			auto data = tcp.ReceiveData();
-			for (auto &charItem : data)
+			for (auto& charItem : data)
 			{
 				if (charItem == 0xd || charItem == 0x3e) {
 					charItem = 0x20;
@@ -74,5 +56,52 @@ int main(int argc, char* argv[])
 			break;
 		}
 	}
+}
 
+int main(int argc, char* argv[])
+{
+    std::cout << "Hello!\n";
+	for (int i = 0; i < argc; i++)
+		std::cout << "Param" << i << ":" << argv[i] << std::endl;
+
+	InputParser parser(argc, argv);
+
+	// Validate the parameters
+	if (argc == 1) {
+		std::cout << "usage: --host [HOST IP] --port [PORT] --terminal\n";
+		return 1;
+	}
+
+	std::string host = parser.getCmdOption("--host");
+	std::string port = parser.getCmdOption("--port");
+	auto terminalMode = parser.cmdOptionExists("--terminal");
+
+	if (terminalMode) {
+		TerminalMode(host, port);
+		return 0;
+	}
+
+	FileWriter writer("receivedata.log");
+
+	auto tcpClient = std::make_shared<TCPClient>(host, port);
+	ELM327Communicator communicator(tcpClient);
+	communicator.Connect();
+	while (true) {
+		try {
+			for (auto [code, value] : communicator.ReadLiveCodeValues()) {
+				std::cout << DateTimeProvider::DateTme()->UtcNow()<< " " << code << " "s << value << std::endl;
+			}
+			auto [voltage, value] = communicator.ReadVoltageCodeValue();
+			std::cout << DateTimeProvider::DateTme()->UtcNow()<< " "<< voltage << " "s << value << std::endl;
+
+			for (auto [errorcode, errorvalue] : communicator.ReadErrorCodeValues()) {
+				std::cerr << DateTimeProvider::DateTme()->UtcNow() << " " << errorcode << " "s << errorvalue << std::endl;
+			}
+		}
+		catch (const std::exception& e) {
+			std::cerr << e.what() << std::endl;
+			break;
+		}
+	}
+	return 0;
 }

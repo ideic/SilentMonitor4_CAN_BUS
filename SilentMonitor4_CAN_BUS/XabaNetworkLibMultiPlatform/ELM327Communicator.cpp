@@ -10,6 +10,7 @@ struct ATCommands {
 	static const std::string ATSPX_SetProtocolToX;
 	static const std::string ATIB96_9600BaudRate;
 	static const std::string ATIB48_4800BaudRate;
+	static const std::string RV_ReadVoltage;
 
 };
 
@@ -23,12 +24,14 @@ const std::string ATCommands::ATDP_DisplayProtocol = "ATDP"s;
 const std::string ATCommands::ATSPX_SetProtocolToX = "ATSP"s;
 const std::string ATCommands::ATIB96_9600BaudRate = "ATIB96"s;
 const std::string ATCommands::ATIB48_4800BaudRate = "ATIB48"s;
-
+const std::string ATCommands::RV_ReadVoltage = "ATRV"s;
 
 struct OBDCommands {
 	static const std::string Code_01_ShowCurrentData;
+	static const std::string Code_03_ErrorCodes;
 };
 const std::string OBDCommands::Code_01_ShowCurrentData = "01"s;
+const std::string OBDCommands::Code_03_ErrorCodes = "03"s;
 
 struct OBDPIDs {
 	static const std::string Code_00_SupportedPIDS;
@@ -208,7 +211,7 @@ void ELM327Communicator::SetSupportedPID(std::string_view availablePIDs, uint16_
 	}
 }
 
-std::vector<std::pair<std::string, std::string>> ELM327Communicator::ReadLiveCodesValues() {
+std::vector<std::pair<std::string, std::string>> ELM327Communicator::ReadLiveCodeValues() {
 	std::vector<std::pair<std::string, std::string>> result;
 	for (auto& pin : _supportedPins) {
 		auto codeValue = SendCode(OBDCommands::Code_01_ShowCurrentData + pin).ResponseValue();
@@ -222,4 +225,15 @@ std::vector<std::pair<std::string, std::string>> ELM327Communicator::ReadLiveCod
 	}
 
 	return result;
+}
+
+std::pair<std::string, std::string> ELM327Communicator::ReadVoltageCodeValue(){
+	auto codeValue = SendCode(ATCommands::RV_ReadVoltage).ResponseValue();
+	return { ATCommands::RV_ReadVoltage, codeValue.substr(0, codeValue.length()-3) };
+}
+
+std::vector<std::pair<std::string, std::string>> ELM327Communicator::ReadErrorCodeValues(){
+
+	auto codeValue = SendCode(OBDCommands::Code_03_ErrorCodes).ResponseValue();
+	return std::vector<std::pair<std::string, std::string>>();
 }

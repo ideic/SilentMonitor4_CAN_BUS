@@ -15,7 +15,7 @@ class ELM327Communicator
 		CodeEntity Log();
 	};
 
-	uint8_t _protocol{0};
+	uint16_t _protocol{0};
 	std::shared_ptr<TCPClient> _networkHandler;
 	std::vector<std::string> _supportedPins;
 	
@@ -26,7 +26,8 @@ class ELM327Communicator
 public:
 	ELM327Communicator(std::shared_ptr<TCPClient> networkHandler);
 	void Connect();
-	std::vector<std::pair<std::string, std::string>> ReadLiveCodesValues();
-
+	std::vector<std::pair<std::string, std::string>> ReadLiveCodeValues();
+	std::pair<std::string, std::string> ReadVoltageCodeValue();
+	std::vector<std::pair<std::string, std::string>>ReadErrorCodeValues();
 };
 

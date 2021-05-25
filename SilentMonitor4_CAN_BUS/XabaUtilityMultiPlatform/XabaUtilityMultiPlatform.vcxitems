@@ -15,8 +15,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)BlockingQueue.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)DateTime.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)DateTimeProvider.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)BlockingQueue.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)DateTime.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)DateTimeProvider.cpp" />
   </ItemGroup>
 </Project>
