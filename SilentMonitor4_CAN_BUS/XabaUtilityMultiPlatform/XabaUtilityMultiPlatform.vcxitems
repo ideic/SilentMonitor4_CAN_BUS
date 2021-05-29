@@ -17,10 +17,18 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)BlockingQueue.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)DateTime.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)DateTimeProvider.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Logger\ConsoleLogger.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Logger\ILogSink.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Logger\Logger.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Logger\RollingFileLogger.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)BlockingQueue.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)DateTime.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)DateTimeProvider.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Logger\ConsoleLogger.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Logger\ILogSink.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Logger\Logger.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Logger\RollingFileLogger.cpp" />
   </ItemGroup>
 </Project>

@@ -7,12 +7,12 @@
 #include <bluetooth/hci_lib.h>
 
 #include <vector>
-#include "Logger.h"
+#include <Logger/Logger.h>
 #include <thread>
 #include <chrono>
 using namespace std::chrono_literals;
-
 using namespace std::string_literals;
+using namespace Xaba;
 
 struct BluetoothServer::SocketInfo {
     int _socketId{ -1 };

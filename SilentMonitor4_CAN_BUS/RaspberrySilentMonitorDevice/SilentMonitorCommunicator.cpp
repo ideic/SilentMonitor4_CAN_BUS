@@ -1,6 +1,6 @@
 #include "SilentMonitorCommunicator.h"
 #include "GetStateCommand.h"
-#include "Logger.h"
+#include <Logger/Logger.h>
 #include "ConfigCommand.h"
 #include "JSON.hpp"
 #include <string.h>

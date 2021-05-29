@@ -9,7 +9,9 @@
 #include "FileWriter.h"
 #include <ELM327Communicator.h>
 #include <DateTimeProvider.h>
+#include <Logger/Logger.h>
 using namespace std::string_literals;
+using namespace Xaba;
 
 class InputParser {
 public:
@@ -81,6 +83,7 @@ int main(int argc, char* argv[])
 		return 0;
 	}
 
+	Logger::InitLogger({ LogSinkType::Console }, {});
 	FileWriter writer("receivedata.log");
 
 	auto tcpClient = std::make_shared<TCPClient>(host, port);
@@ -88,18 +91,21 @@ int main(int argc, char* argv[])
 	communicator.Connect();
 	while (true) {
 		try {
+			Logger::Info("Live Codes");
 			for (auto [code, value] : communicator.ReadLiveCodeValues()) {
-				std::cout << DateTimeProvider::DateTme()->UtcNow()<< " " << code << " "s << value << std::endl;
+				Logger::Info(code + " "s + value);
 			}
+			Logger::Info("VOLT");
 			auto [voltage, value] = communicator.ReadVoltageCodeValue();
-			std::cout << DateTimeProvider::DateTme()->UtcNow()<< " "<< voltage << " "s << value << std::endl;
+			Logger::Info(voltage + " "s + value );
 
+			Logger::Info("Error Codes");
 			for (auto [errorcode, errorvalue] : communicator.ReadErrorCodeValues()) {
-				std::cerr << DateTimeProvider::DateTme()->UtcNow() << " " << errorcode << " "s << errorvalue << std::endl;
+				Logger::Error(errorcode + " "s + errorvalue );
 			}
 		}
 		catch (const std::exception& e) {
-			std::cerr << e.what() << std::endl;
+			Logger::Error("Exception occured:"s + e.what());
 			break;
 		}
 	}

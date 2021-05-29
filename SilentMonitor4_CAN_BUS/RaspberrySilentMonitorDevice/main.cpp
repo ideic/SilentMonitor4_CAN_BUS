@@ -3,12 +3,14 @@
 #include "SilentMonitorCommunicator.h"
 #include "ConfigurationManager.h"
 #include "WIFIServer.h"
-#include "Logger.h"
+#include <Logger/Logger.h>
+using namespace std::string_literals;
+using namespace Xaba;
 int main(void){
     try {
         std::shared_ptr configManager = std::make_shared<ConfigurationManager>();
 
-    Logger::InitLogger(configManager);
+        Logger::InitLogger(configManager->GetLogSetting().LogSinks, Logger::LogContext{ configManager->GetWorkingDir() + "canbussniffer"s });
 	
         std::shared_ptr<BluetoothServer> bsserver = std::make_shared<BluetoothServer>(configManager);
         std::thread _bsServerThread([&bsserver]() { bsserver->Run(); });

@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)BlockingQueue.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)DateTime.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)DateTimeProvider.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Logger\ConsoleLogger.cpp">
+      <Filter>Logger</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Logger\ILogSink.cpp">
+      <Filter>Logger</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Logger\Logger.cpp">
+      <Filter>Logger</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Logger\RollingFileLogger.cpp">
+      <Filter>Logger</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)BlockingQueue.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)DateTime.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)DateTimeProvider.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Logger\ConsoleLogger.h">
+      <Filter>Logger</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Logger\ILogSink.h">
+      <Filter>Logger</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Logger\Logger.h">
+      <Filter>Logger</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Logger\RollingFileLogger.h">
+      <Filter>Logger</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Logger">
+      <UniqueIdentifier>{3e9f890d-b740-4042-b22a-0e6da2bb05d7}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

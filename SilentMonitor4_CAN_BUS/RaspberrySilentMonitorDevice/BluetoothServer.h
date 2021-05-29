@@ -1,7 +1,7 @@
 #pragma once
 #include <memory>
 #include <atomic>
-#include "BlockingQueue.h"
+#include <BlockingQueue.h>
 #include "ConfigurationManager.h"
 class BluetoothServer 
 {
@@ -17,6 +17,6 @@ public:
 	void Run();
 	void Stop();
 	void SendCommand(const std::string& command) const;
-	BlockingQueue<std::string> _receivedCommands;
+	Xaba::BlockingQueue<std::string> _receivedCommands;
 };
 

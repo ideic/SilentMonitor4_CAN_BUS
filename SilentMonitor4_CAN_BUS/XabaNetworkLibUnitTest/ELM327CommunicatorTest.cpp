@@ -1,9 +1,10 @@
 #include "pch.h"
-#include "TCPClient.h"
+#include <TCPClient.h>
 #include "ELM327Communicator.h"
 #include <string_view>
 #include <algorithm>
 #pragma comment( lib, "Ws2_32.lib" )
+using namespace Xaba;
 class TCPClientMock : public TCPClient {
 private:
 	std::map<std::string, std::string> _atAnswers;

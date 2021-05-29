@@ -1,5 +1,8 @@
 #include "ELM327Communicator.h"
 #include  <iomanip>
+#include <Logger/Logger.h>
+using namespace Xaba;
+
 struct ATCommands {
 	static const std::string ATI_DisplayId;
 	static const std::string ATD_SetBackDefaults;
@@ -77,7 +80,7 @@ std::string ELM327Communicator::CodeEntity::ResponseValue() {
 }
 
 ELM327Communicator::CodeEntity ELM327Communicator::CodeEntity::Log() {
-	
+	Logger::Info("Code:"s + _sentCode + " Value:" + _receivedCode);
 	return *this;
 }
 

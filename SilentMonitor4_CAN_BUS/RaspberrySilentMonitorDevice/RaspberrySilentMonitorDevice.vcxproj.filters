@@ -15,18 +15,6 @@
     </ClCompile>
     <ClCompile Include="ConfigurationManager.cpp" />
     <ClCompile Include="WIFIServer.cpp" />
-    <ClCompile Include="Logger.cpp">
-      <Filter>Logger</Filter>
-    </ClCompile>
-    <ClCompile Include="ILogSink.cpp">
-      <Filter>Logger</Filter>
-    </ClCompile>
-    <ClCompile Include="ConsoleLogger.cpp">
-      <Filter>Logger</Filter>
-    </ClCompile>
-    <ClCompile Include="RollingFileLogger.cpp">
-      <Filter>Logger</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BluetoothServer.h" />
@@ -93,18 +81,6 @@
       <Filter>Quentem</Filter>
     </ClInclude>
     <ClInclude Include="WIFIServer.h" />
-    <ClInclude Include="Logger.h">
-      <Filter>Logger</Filter>
-    </ClInclude>
-    <ClInclude Include="ILogSink.h">
-      <Filter>Logger</Filter>
-    </ClInclude>
-    <ClInclude Include="ConsoleLogger.h">
-      <Filter>Logger</Filter>
-    </ClInclude>
-    <ClInclude Include="RollingFileLogger.h">
-      <Filter>Logger</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="bluetooth_init.sh" />
@@ -115,9 +91,6 @@
     </Filter>
     <Filter Include="Quentem">
       <UniqueIdentifier>{696b5017-2f5c-4957-b4c4-b8c3b262f137}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Logger">
-      <UniqueIdentifier>{b4925aa8-b69c-44d4-b6fb-3ea93850f317}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -31,6 +31,7 @@
   <ImportGroup Label="ExtensionSettings" />
   <ImportGroup Label="Shared">
     <Import Project="..\XabaNetworkLibMultiPlatform\XabaNetworkLibMultiPlatform.vcxitems" Label="Shared" />
+    <Import Project="..\XabaUtilityMultiPlatform\XabaUtilityMultiPlatform.vcxitems" Label="Shared" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />

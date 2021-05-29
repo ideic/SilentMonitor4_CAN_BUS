@@ -1,7 +1,10 @@
 #include "DateTime.h"
 using namespace std::string_literals;
 using namespace std::chrono;
+using namespace Xaba;
+#ifndef WIN32
 
+#endif // !WIN32
 DateTime DateTime::UtcNow()
 {
 	_timeValue = std::chrono::system_clock::now();
@@ -15,8 +18,7 @@ std::string DateTime::to_string() const
 
 	auto timet = std::chrono::system_clock::to_time_t(now);
 
-	tm utc_tm;
-	auto error = gmtime_s( &utc_tm, &timet);
+	tm utc_tm = *gmtime(  &timet);
 
 	return  std::to_string(utc_tm.tm_year + 1900) + "-"s +
 		std::to_string(utc_tm.tm_mon + 1) + "-"s +
@@ -27,8 +29,9 @@ std::string DateTime::to_string() const
 		std::to_string(std::chrono::duration_cast<milliseconds>(now.time_since_epoch()).count() / 1000.0);
 }
 
-std::ostream& operator<<(std::ostream& os, const DateTime& dt)
+std::ostream& Xaba::operator<<(std::ostream& os, const DateTime& dt)
 {
 	os << dt.to_string();
 	return os;
 }
+

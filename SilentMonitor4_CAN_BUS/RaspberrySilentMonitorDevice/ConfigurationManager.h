@@ -4,6 +4,8 @@
 #include <functional>
 #include <mutex>
 #include <memory>
+#include <Logger/Logger.h>
+using namespace Xaba;
 
 struct WifiSetting {
 	std::string SSID{};
@@ -11,11 +13,6 @@ struct WifiSetting {
 	std::string Port{};
 };
 
-enum class LogSinkType
-{
-	Console,
-	File
-};
 struct LogSetting {
 	std::vector<LogSinkType> LogSinks;
 };

@@ -67,17 +67,16 @@
       <Command>gpio export 17 out</Command>
       <Message>export pin 17 using the gpio utility so that we can execute the blink program without sudo</Message>
     </RemotePostBuildEvent>
+    <ClCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BluetoothServer.cpp" />
     <ClCompile Include="ConfigCommand.cpp" />
     <ClCompile Include="ConfigurationManager.cpp" />
-    <ClCompile Include="ConsoleLogger.cpp" />
     <ClCompile Include="GetStateCommand.cpp" />
-    <ClCompile Include="ILogSink.cpp" />
-    <ClCompile Include="Logger.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="RollingFileLogger.cpp" />
     <ClCompile Include="SilentMonitorCommunicator.cpp" />
     <ClCompile Include="StateCommandBase.cpp" />
     <ClCompile Include="WIFIServer.cpp" />
@@ -86,10 +85,7 @@
     <ClInclude Include="BluetoothServer.h" />
     <ClInclude Include="ConfigCommand.h" />
     <ClInclude Include="ConfigurationManager.h" />
-    <ClInclude Include="ConsoleLogger.h" />
     <ClInclude Include="GetStateCommand.h" />
-    <ClInclude Include="ILogSink.h" />
-    <ClInclude Include="Logger.h" />
     <ClInclude Include="quentem\ALE.hpp" />
     <ClInclude Include="quentem\Array.hpp" />
     <ClInclude Include="quentem\Common.hpp" />
@@ -107,7 +103,6 @@
     <ClInclude Include="quentem\Template.hpp" />
     <ClInclude Include="quentem\Unicode.hpp" />
     <ClInclude Include="quentem\Value.hpp" />
-    <ClInclude Include="RollingFileLogger.h" />
     <ClInclude Include="SilentMonitorCommunicator.h" />
     <ClInclude Include="StateCommandBase.h" />
     <ClInclude Include="WIFIServer.h" />
@@ -133,6 +128,7 @@
     <ClCompile>
       <AdditionalIncludeDirectories>$(ProjectDir)quentem;$(ProjectDir);../XabaUtilityMultiPlatform/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <CppLanguageStandard>c++17</CppLanguageStandard>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

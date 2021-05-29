@@ -10,7 +10,7 @@
 #define MY_GET_ERROR_MESSAGE GetErrorMessage
 #define INIT_SOCKET InitSocketCommunicaiton()
 #endif
-#ifdef LINUX
+#ifndef WIN32
 #include <sys/socket.h>
 #include <unistd.h>
 #include <arpa/inet.h>
@@ -19,10 +19,11 @@
 #define MY_GET_LAST_ERROR errno
 #define MY_GET_ERROR_MESSAGE strerror
 #define INIT_SOCKET ;
-#endif // LINUX
+#endif 
 #include <iostream>
-using namespace std::string_literals;
 
+using namespace std::string_literals;
+using namespace Xaba;
 std::string GetErrorMessage(int systemtErrorCode)
 {
     char* message;

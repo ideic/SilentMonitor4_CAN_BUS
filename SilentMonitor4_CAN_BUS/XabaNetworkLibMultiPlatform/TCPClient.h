@@ -4,20 +4,21 @@
 #include <memory>
 #include <string_view>
 #include <vector>
-class TCPClient
-{
-	struct SocketInfo;
-	std::string _host;
-	std::string _port;
-	
-	std::shared_ptr<SocketInfo> _socketInfo;
+namespace Xaba {
+	class TCPClient
+	{
+		struct SocketInfo;
+		std::string _host;
+		std::string _port;
 
-public:
-	TCPClient(std::string host, std::string port);
-	~TCPClient();
-	void Connect();
+		std::shared_ptr<SocketInfo> _socketInfo;
 
-	virtual std::vector<uint8_t> ReceiveData();
-	virtual void SendData(std::string_view message);
-};
+	public:
+		TCPClient(std::string host, std::string port);
+		~TCPClient();
+		void Connect();
 
+		virtual std::vector<uint8_t> ReceiveData();
+		virtual void SendData(std::string_view message);
+	};
+}
