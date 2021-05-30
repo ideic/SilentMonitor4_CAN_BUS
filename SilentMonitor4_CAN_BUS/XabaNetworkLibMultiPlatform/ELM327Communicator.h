@@ -21,7 +21,7 @@ namespace Xaba {
 
 		CodeEntity SendCode(std::string code);
 		void GetNextProtocol(uint16_t& protocolNumber);
-		void SetSupportedPID(std::string_view supportedPINSAnswer, uint16_t offset);
+		void SetSupportedPID(std::string supportedPINSAnswer, uint16_t offset);
 		void SetSupportedPIDs(std::vector<std::string> pidQueryCodes);
 	public:
 		ELM327Communicator(std::shared_ptr<TCPClient> networkHandler);

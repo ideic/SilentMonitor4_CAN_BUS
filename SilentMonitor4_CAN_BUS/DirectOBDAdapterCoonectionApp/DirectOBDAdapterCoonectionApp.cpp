@@ -37,7 +37,7 @@ private:
 };
 void TerminalMode(const std::string& host, const std::string& port) {
 	TCPClient tcp(host, port);
-
+	tcp.Connect();
 	while (true) {
 		try {
 			std::string input;
@@ -87,6 +87,7 @@ int main(int argc, char* argv[])
 	FileWriter writer("receivedata.log");
 
 	auto tcpClient = std::make_shared<TCPClient>(host, port);
+	tcpClient->Connect();
 	ELM327Communicator communicator(tcpClient);
 	communicator.Connect();
 	while (true) {

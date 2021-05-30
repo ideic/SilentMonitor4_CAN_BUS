@@ -1,7 +1,9 @@
 #include "ELM327Communicator.h"
 #include  <iomanip>
 #include <Logger/Logger.h>
+#include <chrono>
 using namespace Xaba;
+using namespace std::chrono_literals;
 
 struct ATCommands {
 	static const std::string ATI_DisplayId;
@@ -136,7 +138,8 @@ void ELM327Communicator::Connect(){
 			}
 
 			response = SendCode(OBDCommands::Code_01_ShowCurrentData+ OBDPIDs::Code_00_SupportedPIDS).Log().ResponseValue();
-			bool found = response.find("NODATA"s) != std::string::npos;
+			bool found = (response.find("NO DATA"s) != std::string::npos)
+						 || (response.find("ERROR"s) != std::string::npos);
 			if (!found) {
 				protocolNotFound = false;
 				SendCode(ATCommands::ATDP_DisplayProtocol).Log();
@@ -149,10 +152,11 @@ void ELM327Communicator::Connect(){
 				|| protocolNumber == (uint8_t)OBDProtocols::ISO_14230_4_KWP_5baud
 				|| protocolNumber == (uint8_t)OBDProtocols::ISO_14230_4_KWP_FAST_INIT
 				) {
-		
+				std::this_thread::sleep_for(3s); // to avoid bus init error
 				SendCode(ATCommands::ATIB96_9600BaudRate).Log();
 				response = SendCode(OBDCommands::Code_01_ShowCurrentData + OBDPIDs::Code_00_SupportedPIDS).Log().ResponseValue();
-				found = response.find("NODATA"s) != std::string::npos;
+				found = (response.find("NO DATA"s) != std::string::npos) 
+						|| (response.find("ERROR"s) != std::string::npos);
 				if (!found) {
 					protocolNotFound = false;
 					SendCode(ATCommands::ATDP_DisplayProtocol).Log();
@@ -161,8 +165,9 @@ void ELM327Communicator::Connect(){
 					continue;
 				}
 				SendCode(ATCommands::ATIB48_4800BaudRate).Log();
+				std::this_thread::sleep_for(1s); // to avoid bus init error
 				response = SendCode(OBDCommands::Code_01_ShowCurrentData + OBDPIDs::Code_00_SupportedPIDS).Log().ResponseValue();
-				found = response.find("NODATA"s) != std::string::npos;
+				found = response.find("NO DATA"s) != std::string::npos;
 				if (!found) {
 					protocolNotFound = false;
 					SendCode(ATCommands::ATDP_DisplayProtocol).Log();
@@ -184,7 +189,7 @@ void ELM327Communicator::Connect(){
 	}
 	_supportedPins.clear();
 
-	SetSupportedPID(supportedPINs.substr("0100 4100"s.length(), 8), 0x00);
+	SetSupportedPID(supportedPINs.substr("0100 41 00"s.length()), 0x00);
 
 	SetSupportedPIDs({ "20"s, "40"s, "60"s,"80"s, "A0"s, "C0"s,"E0"s });
 }
@@ -196,11 +201,12 @@ void ELM327Communicator::SetSupportedPIDs(std::vector<std::string> pidQueryCodes
 			});
 		if (found != end(_supportedPins)) {
 			auto supportedPID = SendCode(OBDCommands::Code_01_ShowCurrentData + OBDPIDs::Code_20_SupportedPIDS).Log().ResponseValue();
-			SetSupportedPID(supportedPID.substr("01XX 41XX"s.length(), 8), std::stoul(queryCode, nullptr, 16));
+			SetSupportedPID(supportedPID.substr("01XX 41 XX"s.length()), std::stoul(queryCode, nullptr, 16));
 		}
 	}
 }
-void ELM327Communicator::SetSupportedPID(std::string_view availablePIDs, uint16_t offset) {
+void ELM327Communicator::SetSupportedPID(std::string availablePIDs, uint16_t offset) {
+	availablePIDs.erase(std::remove_if(availablePIDs.begin(), availablePIDs.end(), isspace), availablePIDs.end());
 	auto pinMask = std::stoul(std::string(availablePIDs), nullptr, 16);
 
 	for (int i = 31 ; i >=0; i--) {
@@ -218,12 +224,12 @@ std::vector<std::pair<std::string, std::string>> ELM327Communicator::ReadLiveCod
 	std::vector<std::pair<std::string, std::string>> result;
 	for (auto& pin : _supportedPins) {
 		auto codeValue = SendCode(OBDCommands::Code_01_ShowCurrentData + pin).ResponseValue();
-		if (codeValue.find("NODATA"s) != std::string::npos) {
-			result.emplace_back(pin, "NODATA"s);
+		if (codeValue.find("NO DATA"s) != std::string::npos) {
+			result.emplace_back(pin, "NO DATA"s);
 		}
 		else {
-			auto answerlength = "01XX 41XX"s.length();
-			result.emplace_back(pin, codeValue.substr(answerlength, codeValue.length() - (answerlength + 3)));
+			auto answerlength = "01XX 41 XX"s.length();
+			result.emplace_back(pin, codeValue.substr(answerlength+1, codeValue.length() - (answerlength+1 + 3)));
 		}
 	}
 
@@ -237,6 +243,12 @@ std::pair<std::string, std::string> ELM327Communicator::ReadVoltageCodeValue(){
 
 std::vector<std::pair<std::string, std::string>> ELM327Communicator::ReadErrorCodeValues(){
 
-	auto codeValue = SendCode(OBDCommands::Code_03_ErrorCodes).ResponseValue();
-	return std::vector<std::pair<std::string, std::string>>();
+	auto codeValue = SendCode(OBDCommands::Code_03_ErrorCodes).Log().ResponseValue();
+	codeValue = codeValue.substr("03\r43 "s.length(), codeValue.length() - ("03\r43 "s.length() + 3));
+
+
+	return {
+		{"03"s,  codeValue.substr(0, 5)},
+		{"03"s,  codeValue.substr(6, 5)},
+	};
 }
