@@ -10,6 +10,7 @@
 #include <ELM327Communicator.h>
 #include <DateTimeProvider.h>
 #include <Logger/Logger.h>
+#include <filesystem>
 using namespace std::string_literals;
 using namespace Xaba;
 
@@ -83,32 +84,40 @@ int main(int argc, char* argv[])
 		return 0;
 	}
 
-	Logger::InitLogger({ LogSinkType::Console }, {});
+	Logger::InitLogger({ LogSinkType::Console, LogSinkType::File }, {std::filesystem::current_path().string() + "\\directOBDAdapter"s});
 	FileWriter writer("receivedata.log");
+	try {
 
-	auto tcpClient = std::make_shared<TCPClient>(host, port);
-	tcpClient->Connect();
-	ELM327Communicator communicator(tcpClient);
-	communicator.Connect();
-	while (true) {
-		try {
-			Logger::Info("Live Codes");
-			for (auto [code, value] : communicator.ReadLiveCodeValues()) {
-				Logger::Info(code + " "s + value);
+
+		auto tcpClient = std::make_shared<TCPClient>(host, port);
+		tcpClient->Connect();
+		ELM327Communicator communicator(tcpClient);
+		communicator.Connect();
+		while (true) {
+			try {
+				Logger::Info("Live Codes");
+				for (auto [code, value] : communicator.ReadLiveCodeValues()) {
+					Logger::Info(code + " "s + value);
+				}
+				Logger::Info("VOLT");
+				auto [voltage, value] = communicator.ReadVoltageCodeValue();
+				Logger::Info(voltage + " "s + value);
+
+				Logger::Info("Error Codes");
+				for (auto [errorcode, errorvalue] : communicator.ReadErrorCodeValues()) {
+					Logger::Error(errorcode + " "s + errorvalue);
+				}
 			}
-			Logger::Info("VOLT");
-			auto [voltage, value] = communicator.ReadVoltageCodeValue();
-			Logger::Info(voltage + " "s + value );
-
-			Logger::Info("Error Codes");
-			for (auto [errorcode, errorvalue] : communicator.ReadErrorCodeValues()) {
-				Logger::Error(errorcode + " "s + errorvalue );
+			catch (const std::exception& e) {
+				Logger::Error("Exception occured:"s + e.what());
+				break;
 			}
 		}
-		catch (const std::exception& e) {
-			Logger::Error("Exception occured:"s + e.what());
-			break;
-		}
+
+		return 0;
 	}
-	return 0;
+	catch (const std::exception& ex) {
+		Logger::Error(ex.what());
+		return 1;
+	}
 }

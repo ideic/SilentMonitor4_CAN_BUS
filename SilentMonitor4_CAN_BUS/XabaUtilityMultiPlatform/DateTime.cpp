@@ -1,10 +1,32 @@
 #include "DateTime.h"
+#include <sstream>
+#include <iomanip>
+
 using namespace std::string_literals;
 using namespace std::chrono;
 using namespace Xaba;
 #ifndef WIN32
 
 #endif // !WIN32
+
+class StringFormat{
+	std::string _raw;
+public:
+	StringFormat(std::string from) : _raw(std::move(from)) {};
+	std::string Digit(uint8_t digit) {
+		std::ostringstream oss;
+		oss << std::setw(digit) << std::setfill('0') << _raw;
+		return oss.str();
+	}
+};
+StringFormat string(const std::string& value) {
+	return StringFormat(value);
+}
+
+StringFormat string(int value) {
+	return StringFormat(std::to_string(value));
+}
+
 DateTime DateTime::UtcNow()
 {
 	_timeValue = std::chrono::system_clock::now();
@@ -21,17 +43,16 @@ std::string DateTime::to_string() const
 	tm utc_tm = *gmtime(  &timet);
 
 	return  std::to_string(utc_tm.tm_year + 1900) + "-"s +
-		std::to_string(utc_tm.tm_mon + 1) + "-"s +
-		std::to_string(utc_tm.tm_mday) + " "s +
-		std::to_string(utc_tm.tm_hour) + ":"s +
-		std::to_string(utc_tm.tm_min) + ":"s +
-		std::to_string(utc_tm.tm_sec) + "."s +
-		std::to_string(std::chrono::duration_cast<milliseconds>(now.time_since_epoch()).count() / 1000.0);
+		string(utc_tm.tm_mon + 1).Digit(2) + "-"s +
+		string(utc_tm.tm_mday).Digit(2) + " "s +
+		string(utc_tm.tm_hour).Digit(2) + ":"s +
+		string(utc_tm.tm_min).Digit(2) + ":"s +
+		string(utc_tm.tm_sec).Digit(2) + "."s +
+		string(std::chrono::duration_cast<milliseconds>(now.time_since_epoch()).count() % 1000).Digit(3);
 }
 
-std::ostream& Xaba::operator<<(std::ostream& os, const DateTime& dt)
+std::ostream& operator<<(std::ostream& os, const Xaba::DateTime& dt)
 {
 	os << dt.to_string();
 	return os;
 }
-

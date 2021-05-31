@@ -10,9 +10,7 @@ namespace Xaba {
 		virtual DateTime UtcNow();
 
 		std::string to_string() const;
-
-		friend std::ostream& operator<<(std::ostream& os, const DateTime& dt);
 	};
-
-	std::ostream& operator<<(std::ostream& os, const DateTime& dt);
 }
+
+std::ostream& operator<<(std::ostream& os, const Xaba::DateTime& dt);
