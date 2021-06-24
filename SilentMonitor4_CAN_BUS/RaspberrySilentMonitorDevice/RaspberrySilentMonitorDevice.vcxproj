@@ -45,6 +45,7 @@
   <ImportGroup Label="ExtensionSettings" />
   <ImportGroup Label="Shared">
     <Import Project="..\XabaUtilityMultiPlatform\XabaUtilityMultiPlatform.vcxitems" Label="Shared" />
+    <Import Project="..\XabaNetworkLibMultiPlatform\XabaNetworkLibMultiPlatform.vcxitems" Label="Shared" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
@@ -79,7 +80,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="SilentMonitorCommunicator.cpp" />
     <ClCompile Include="StateCommandBase.cpp" />
-    <ClCompile Include="WIFIServer.cpp" />
+    <ClCompile Include="CANBUSCommunicator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BluetoothServer.h" />
@@ -105,7 +106,7 @@
     <ClInclude Include="quentem\Value.hpp" />
     <ClInclude Include="SilentMonitorCommunicator.h" />
     <ClInclude Include="StateCommandBase.h" />
-    <ClInclude Include="WIFIServer.h" />
+    <ClInclude Include="CANBUSCommunicator.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="bluetooth_init.sh">

@@ -14,7 +14,7 @@ namespace Xaba {
 		std::mutex _lock;
 	public:
 		RollingFileLogger(const  std::string& fileNameWithoutExtension);
-		~RollingFileLogger();
+	
 		void Info(const std::string& message) override;
 		void Error(const std::string& message) override;
 

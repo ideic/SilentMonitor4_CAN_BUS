@@ -21,6 +21,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Logger\ILogSink.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Logger\Logger.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Logger\RollingFileLogger.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)ThreadManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)BlockingQueue.cpp" />
@@ -30,5 +31,6 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Logger\ILogSink.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Logger\Logger.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Logger\RollingFileLogger.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)ThreadManager.cpp" />
   </ItemGroup>
 </Project>

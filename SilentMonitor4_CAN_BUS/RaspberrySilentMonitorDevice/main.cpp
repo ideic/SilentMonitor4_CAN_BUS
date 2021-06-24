@@ -2,34 +2,32 @@
 #include <thread>
 #include "SilentMonitorCommunicator.h"
 #include "ConfigurationManager.h"
-#include "WIFIServer.h"
+#include "CANBUSCommunicator.h"
 #include <Logger/Logger.h>
+#include "ThreadManager.h"
 using namespace std::string_literals;
 using namespace Xaba;
 int main(void){
-    try {
-        std::shared_ptr configManager = std::make_shared<ConfigurationManager>();
 
-        Logger::InitLogger(configManager->GetLogSetting().LogSinks, Logger::LogContext{ configManager->GetWorkingDir() + "canbussniffer"s });
+	try {
+        std::shared_ptr<ConfigurationManager> _configManager = std::make_shared<ConfigurationManager>();
+
+        Logger::InitLogger(_configManager->GetLogSetting().LogSinks, Logger::LogContext{ _configManager->GetWorkingDir() + "canbussniffer"s });
 	
-        std::shared_ptr<BluetoothServer> bsserver = std::make_shared<BluetoothServer>(configManager);
-        std::thread _bsServerThread([&bsserver]() { bsserver->Run(); });
+        ThreadManager<BluetoothServer> bsserverThread (std::make_shared<BluetoothServer>(_configManager));
 
-        std::shared_ptr<WIFIServer> wifiserver = std::make_shared<WIFIServer>(configManager);
-        std::thread _wifiServerThread([&wifiserver]() { wifiserver->Run(); });
+        ThreadManager<CANBUSCommunicator> canbusCommunicator (std::make_shared<CANBUSCommunicator>(_configManager));
 
-        std::shared_ptr<SilentMonitorCommunicator> communicator = std::make_shared<SilentMonitorCommunicator>(bsserver, configManager);
+        std::shared_ptr<SilentMonitorCommunicator> communicator = std::make_shared<SilentMonitorCommunicator>(bsserverThread.GetInstance(), _configManager, canbusCommunicator.GetInstance());
         communicator->Run();
 
-        if (_bsServerThread.joinable()) _bsServerThread.join();
-        if (_wifiServerThread.joinable()) _wifiServerThread.join();
-
-        if (configManager->IsRestartNeeded()) {
+        if (_configManager->IsRestartNeeded()) {
             system("sudo reboot");
         }
     }
     catch (const std::exception & error) {
         Logger::Error(error.what());
     }
+
     return 0;
 }

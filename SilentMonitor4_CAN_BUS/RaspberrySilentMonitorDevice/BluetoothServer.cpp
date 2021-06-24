@@ -38,24 +38,48 @@ BluetoothServer::BluetoothServer(std::shared_ptr<ConfigurationManager> configMan
 
 BluetoothServer::~BluetoothServer()
 {
+    _configManager->UnSubscribe(_configToken);
+
     if (_socketInfo->_client >=0)
         close(_socketInfo->_client);
     if (_socketInfo->_socketId >= 0)
         close(_socketInfo->_socketId);
 }
 
-void BluetoothServer::Stop()
+bool BluetoothServer::Fetch()
 {
-    _stopped = true;
+    if (_configManager->IsRestartNeeded()) return true;
+
+    if (!_connected) Connect();
+	std::vector<uint8_t> buf(1024, 0);
+    // read data from the client
+    const auto bytes_read = read(_socketInfo->_client, buf.data(), buf.size());
+    Logger::Info("Bytes read: "s + std::to_string(bytes_read));
+    if (bytes_read > 0) {
+        _receivedCommands.push(std::string(begin(buf), end(buf)));
+        Logger::Info("Pushed message"s);
+
+    }
+    else if (bytes_read == 0) {
+        std::this_thread::sleep_for(100ms);
+    }
+    else {
+        Connect();
+    }
+
+    return false;
+}
+void BluetoothServer::SendCommand(const std::string & command) const {
+	const auto result = write(_socketInfo->_client, command.c_str(), command.size());
+    if (result < 0) {
+        Logger::Error("Send Error errno:"s + std::to_string(errno) + " Reason: "s + std::string(strerror(errno)));
+    }
+    else {
+        Logger::Info("Command sent:"s + command);
+    }
 }
 
-void BluetoothServer::Run()
-{
-    _configToken = _configManager->Subscribe2ConfigStateChange([this]() 
-        {
-            if (_configManager->IsRestartNeeded()) 
-                Stop(); 
-        });
+void BluetoothServer::Connect(){
 
     struct sockaddr_rc loc_addr = { 0 };
     // allocate socket
@@ -78,38 +102,8 @@ void BluetoothServer::Run()
 
     // put socket into listening mode
     listen(_socketInfo->_socketId, 1);
-    Connect();
-    
-    while (!_stopped) {
-        std::vector<uint8_t> buf(1024, 0);
-        // read data from the client
-        const auto bytes_read = read(_socketInfo->_client, buf.data(), buf.size());
-        Logger::Info("Bytes read: "s + std::to_string(bytes_read));
-        if (bytes_read > 0) {
-            _receivedCommands.push(std::string(begin(buf), end(buf)));
-            Logger::Info("Pushed message"s);
 
-        }
-        else if (bytes_read == 0) {
-            std::this_thread::sleep_for(100ms);
-        }
-        else {
-            Connect();
-        }
-    }
-    _configManager->UnSubscribe(_configToken);
-}
-void BluetoothServer::SendCommand(const std::string & command) const {
-	const auto result = write(_socketInfo->_client, command.c_str(), command.size());
-    if (result < 0) {
-        Logger::Error("Send Error errno:"s + std::to_string(errno) + " Reason: "s + std::string(strerror(errno)));
-    }
-    else {
-        Logger::Info("Command sent:"s + command);
-    }
-}
-
-void BluetoothServer::Connect(){
+	
     struct sockaddr_rc rem_addr = { 0 };
     socklen_t opt = sizeof(rem_addr);
 
@@ -124,4 +118,7 @@ void BluetoothServer::Connect(){
 
     buf.clear();
     buf.resize(1024);
+
+    _connected = true;
+
 }

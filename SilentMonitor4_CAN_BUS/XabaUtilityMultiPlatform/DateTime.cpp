@@ -51,6 +51,19 @@ std::string DateTime::to_string() const
 		string(std::chrono::duration_cast<milliseconds>(now.time_since_epoch()).count() % 1000).Digit(3);
 }
 
+std::string DateTime::DateString() {
+	auto now = _timeValue;
+
+	auto timet = std::chrono::system_clock::to_time_t(now);
+
+	tm utc_tm = *gmtime(&timet);
+
+	return  std::to_string(utc_tm.tm_year + 1900) + "-"s +
+		string(utc_tm.tm_mon + 1).Digit(2) + "-"s +
+		string(utc_tm.tm_mday).Digit(2);
+
+}
+
 std::ostream& operator<<(std::ostream& os, const Xaba::DateTime& dt)
 {
 	os << dt.to_string();

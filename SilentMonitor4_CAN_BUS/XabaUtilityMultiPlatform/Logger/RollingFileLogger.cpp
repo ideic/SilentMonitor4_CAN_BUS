@@ -49,7 +49,6 @@ RollingFileLogger::RollingFileLogger(const  std::string& fileNameWithoutExtensio
 
 }
 
-RollingFileLogger::~RollingFileLogger() = default;
 
 void RollingFileLogger::LogMessage(const std::string& message)
 {

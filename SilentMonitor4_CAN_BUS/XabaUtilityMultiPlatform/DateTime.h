@@ -10,6 +10,7 @@ namespace Xaba {
 		virtual DateTime UtcNow();
 
 		std::string to_string() const;
+		std::string DateString();
 	};
 }
 

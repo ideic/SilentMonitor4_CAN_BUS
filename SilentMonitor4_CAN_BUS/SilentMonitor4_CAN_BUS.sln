@@ -13,14 +13,18 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XabaNetworkLibMultiPlatform
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XabaNetworkLibUnitTest", "XabaNetworkLibUnitTest\XabaNetworkLibUnitTest.vcxproj", "{EF3B8194-A13D-44CF-B47C-388E658694D9}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XabaUtilityMultiPlatformUnitTest", "XabaUtilityMultiPlatformUnitTest\XabaUtilityMultiPlatformUnitTest.vcxproj", "{4452457F-4152-4B29-A12A-FCD596EABC9C}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		XabaNetworkLibMultiPlatform\XabaNetworkLibMultiPlatform.vcxitems*{00dab373-c260-4330-9a52-7ec615a58cb7}*SharedItemsImports = 4
 		XabaUtilityMultiPlatform\XabaUtilityMultiPlatform.vcxitems*{00dab373-c260-4330-9a52-7ec615a58cb7}*SharedItemsImports = 4
+		XabaUtilityMultiPlatform\XabaUtilityMultiPlatform.vcxitems*{4452457f-4152-4b29-a12a-fcd596eabc9c}*SharedItemsImports = 4
 		XabaUtilityMultiPlatform\XabaUtilityMultiPlatform.vcxitems*{77980acc-881e-4173-b9dd-dc7af0bb257c}*SharedItemsImports = 9
 		XabaNetworkLibMultiPlatform\XabaNetworkLibMultiPlatform.vcxitems*{b14bc829-1cf1-4e57-9a7b-134f2d8e40a0}*SharedItemsImports = 9
 		XabaNetworkLibMultiPlatform\XabaNetworkLibMultiPlatform.vcxitems*{ef3b8194-a13d-44cf-b47c-388e658694d9}*SharedItemsImports = 4
 		XabaUtilityMultiPlatform\XabaUtilityMultiPlatform.vcxitems*{ef3b8194-a13d-44cf-b47c-388e658694d9}*SharedItemsImports = 4
+		XabaNetworkLibMultiPlatform\XabaNetworkLibMultiPlatform.vcxitems*{eff7bb7e-27c4-4c98-a2c9-ab0e300a5caa}*SharedItemsImports = 4
 		XabaUtilityMultiPlatform\XabaUtilityMultiPlatform.vcxitems*{eff7bb7e-27c4-4c98-a2c9-ab0e300a5caa}*SharedItemsImports = 4
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -74,6 +78,18 @@ Global
 		{EF3B8194-A13D-44CF-B47C-388E658694D9}.Release|x64.Build.0 = Release|x64
 		{EF3B8194-A13D-44CF-B47C-388E658694D9}.Release|x86.ActiveCfg = Release|Win32
 		{EF3B8194-A13D-44CF-B47C-388E658694D9}.Release|x86.Build.0 = Release|Win32
+		{4452457F-4152-4B29-A12A-FCD596EABC9C}.Debug|ARM.ActiveCfg = Debug|Win32
+		{4452457F-4152-4B29-A12A-FCD596EABC9C}.Debug|ARM64.ActiveCfg = Debug|Win32
+		{4452457F-4152-4B29-A12A-FCD596EABC9C}.Debug|x64.ActiveCfg = Debug|x64
+		{4452457F-4152-4B29-A12A-FCD596EABC9C}.Debug|x64.Build.0 = Debug|x64
+		{4452457F-4152-4B29-A12A-FCD596EABC9C}.Debug|x86.ActiveCfg = Debug|Win32
+		{4452457F-4152-4B29-A12A-FCD596EABC9C}.Debug|x86.Build.0 = Debug|Win32
+		{4452457F-4152-4B29-A12A-FCD596EABC9C}.Release|ARM.ActiveCfg = Release|Win32
+		{4452457F-4152-4B29-A12A-FCD596EABC9C}.Release|ARM64.ActiveCfg = Release|Win32
+		{4452457F-4152-4B29-A12A-FCD596EABC9C}.Release|x64.ActiveCfg = Release|x64
+		{4452457F-4152-4B29-A12A-FCD596EABC9C}.Release|x64.Build.0 = Release|x64
+		{4452457F-4152-4B29-A12A-FCD596EABC9C}.Release|x86.ActiveCfg = Release|Win32
+		{4452457F-4152-4B29-A12A-FCD596EABC9C}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

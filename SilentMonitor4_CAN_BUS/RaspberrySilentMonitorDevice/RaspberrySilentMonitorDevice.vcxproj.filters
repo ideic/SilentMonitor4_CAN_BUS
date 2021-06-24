@@ -14,7 +14,7 @@
       <Filter>Commands</Filter>
     </ClCompile>
     <ClCompile Include="ConfigurationManager.cpp" />
-    <ClCompile Include="WIFIServer.cpp" />
+    <ClCompile Include="CANBUSCommunicator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BluetoothServer.h" />
@@ -80,7 +80,7 @@
     <ClInclude Include="quentem\Value.hpp">
       <Filter>Quentem</Filter>
     </ClInclude>
-    <ClInclude Include="WIFIServer.h" />
+    <ClInclude Include="CANBUSCommunicator.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="bluetooth_init.sh" />
