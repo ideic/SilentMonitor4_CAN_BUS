@@ -57,7 +57,7 @@ namespace Xaba {
 			_thread = std::thread([this]() {
 				try {
 					std::stringstream ss{};
-					ss << _thread.get_id();
+					ss << std::this_thread::get_id();
 					{
 						std::lock_guard l(_lock);
 						_finished = false;
