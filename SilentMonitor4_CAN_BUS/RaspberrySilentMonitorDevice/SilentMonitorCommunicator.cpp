@@ -9,9 +9,12 @@ namespace JSON = Qentem::JSON;
 using namespace std::string_literals;
 
 SilentMonitorCommunicator::SilentMonitorCommunicator(
-	std::shared_ptr<BluetoothServer> bluetoothServer, std::shared_ptr<ConfigurationManager> configManager)
+	std::shared_ptr<BluetoothServer> bluetoothServer, 
+	std::shared_ptr<ConfigurationManager> configManager,
+	std::shared_ptr<CANBUSCommunicator> canbusCommunicator)
 	: _bluetoothServer(std::move(bluetoothServer))
 	, _configManager(std::move(configManager))
+	, _canbusCommunicator(std::move(canbusCommunicator))
 {
 	_configSubscribeToken = _configManager->Subscribe2ConfigStateChange([this]()
 		{

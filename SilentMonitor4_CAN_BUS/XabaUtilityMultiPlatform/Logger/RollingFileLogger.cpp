@@ -3,7 +3,7 @@
 #include <string>
 #include <thread>
 #include <sstream>
-#include <DateTimeProvider.h>
+#include "../DateTimeProvider.h"
 #ifdef WIN32
 	#include <filesystem>
 	#define FILE_EXIST std::filesystem::exists
@@ -25,10 +25,10 @@ constexpr uint8_t MAX_FILES = 5;
 constexpr  uint16_t MAX_LINES = 10'000;
 
 
-RollingFileLogger::RollingFileLogger(const  std::string& fileNameWithoutExtension):_logFileName(fileNameWithoutExtension), _lines(0) {
+RollingFileLogger::RollingFileLogger(const std::string& fileNameWithoutExtension):_logFileName(fileNameWithoutExtension), _lines(0) {
 	_currentIndex = -1;
 	std::string fileName;
-	for (auto i = 0; i < MAX_FILES; ++i) {
+	for (int8_t i = 0; i < MAX_FILES; ++i) {
 		fileName =   _logFileName + std::to_string(i) + ".log"s;
 		if (FILE_EXIST(fileName)) {
 			continue;

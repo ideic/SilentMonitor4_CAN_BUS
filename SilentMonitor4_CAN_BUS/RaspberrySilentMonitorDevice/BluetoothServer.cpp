@@ -38,7 +38,6 @@ BluetoothServer::BluetoothServer(std::shared_ptr<ConfigurationManager> configMan
 
 BluetoothServer::~BluetoothServer()
 {
-    _configManager->UnSubscribe(_configToken);
 
     if (_socketInfo->_client >=0)
         close(_socketInfo->_client);

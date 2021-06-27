@@ -19,6 +19,9 @@ int main(void){
         ThreadManager<CANBUSCommunicator> canbusCommunicator (std::make_shared<CANBUSCommunicator>(_configManager));
 
         std::shared_ptr<SilentMonitorCommunicator> communicator = std::make_shared<SilentMonitorCommunicator>(bsserverThread.GetInstance(), _configManager, canbusCommunicator.GetInstance());
+        
+        bsserverThread.Start();
+        canbusCommunicator.Start();
         communicator->Run();
 
         if (_configManager->IsRestartNeeded()) {

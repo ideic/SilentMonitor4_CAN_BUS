@@ -9,21 +9,25 @@
 #define MY_GET_LAST_ERROR WSAGetLastError()
 #define MY_GET_ERROR_MESSAGE GetErrorMessage
 #define INIT_SOCKET InitSocketCommunicaiton()
+#define CLOSESOCKET closesocket
 #endif
 #ifndef WIN32
 #include <sys/socket.h>
 #include <unistd.h>
 #include <arpa/inet.h>
+#include <string.h>
 #define MY_INVALID_SOCKET -1
-#define MY_SOCKET_ERROR SOCKET_ERROR  -1
+#define MY_SOCKET_ERROR -1
 #define MY_GET_LAST_ERROR errno
 #define MY_GET_ERROR_MESSAGE strerror
 #define INIT_SOCKET ;
+#define CLOSESOCKET close
 #endif 
 #include <iostream>
 
 using namespace std::string_literals;
 using namespace Xaba;
+#ifdef WIN32
 std::string GetErrorMessage(int systemtErrorCode)
 {
     char* message;
@@ -47,9 +51,13 @@ void InitSocketCommunicaiton() {
         throw std::runtime_error("Error at WSA Init"s + std::to_string(iResult));
     }
 }
-
+#endif
 struct TCPClient::SocketInfo {
-    SOCKET socketId{ MY_INVALID_SOCKET };
+#ifdef WIN32
+	SOCKET socketId{ MY_INVALID_SOCKET };
+#else
+    int socketId{ MY_INVALID_SOCKET };
+#endif
 };
 
 TCPClient::TCPClient(std::string host, std::string port): _host(host), _port(port){
@@ -57,7 +65,7 @@ TCPClient::TCPClient(std::string host, std::string port): _host(host), _port(por
 }
 
 TCPClient::~TCPClient(){
-     closesocket(_socketInfo->socketId);
+     CLOSESOCKET(_socketInfo->socketId);
 }
 
 

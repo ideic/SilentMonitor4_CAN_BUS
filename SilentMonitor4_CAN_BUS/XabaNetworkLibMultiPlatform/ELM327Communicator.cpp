@@ -1,6 +1,6 @@
 #include "ELM327Communicator.h"
 #include  <iomanip>
-#include <Logger/Logger.h>
+#include "Logger/Logger.h"
 #include <chrono>
 using namespace Xaba;
 using namespace std::chrono_literals;
@@ -196,18 +196,25 @@ void ELM327Communicator::Connect(){
 
 void ELM327Communicator::SetSupportedPIDs(std::vector<std::string> pidQueryCodes) {
 	for (auto queryCode : pidQueryCodes) {
-		auto found = std::find_if(begin(_supportedPins), end(_supportedPins), [&queryCode](const std::string& pin) {
-			return pin == queryCode;
-			});
-		if (found != end(_supportedPins)) {
-			auto supportedPID = SendCode(OBDCommands::Code_01_ShowCurrentData + OBDPIDs::Code_20_SupportedPIDS).Log().ResponseValue();
-			SetSupportedPID(supportedPID.substr("01XX 41 XX"s.length()), std::stoul(queryCode, nullptr, 16));
+		for (auto && pin : _supportedPins){
+			if (pin == queryCode) {
+				auto supportedPID = SendCode(OBDCommands::Code_01_ShowCurrentData + OBDPIDs::Code_20_SupportedPIDS).Log().ResponseValue();
+				SetSupportedPID(supportedPID.substr("01XX 41 XX"s.length()), std::stoul(queryCode, nullptr, 16));
+
+				break;
+			}
 		}
 	}
 }
 void ELM327Communicator::SetSupportedPID(std::string availablePIDs, uint16_t offset) {
-	availablePIDs.erase(std::remove_if(availablePIDs.begin(), availablePIDs.end(), isspace), availablePIDs.end());
-	auto pinMask = std::stoul(std::string(availablePIDs), nullptr, 16);
+
+	std::string sanitizedAvailablePIDs = ""s;
+	for (auto&& charItem : availablePIDs) {
+		if (isspace(charItem)) continue;
+		sanitizedAvailablePIDs += charItem;
+	}
+//	availablePIDs.erase(std::remove_if(availablePIDs.begin(), availablePIDs.end(), isspace), availablePIDs.end());
+	auto pinMask = std::stoul(sanitizedAvailablePIDs, nullptr, 16);
 
 	for (int i = 31 ; i >=0; i--) {
 		uint32_t mask{ 1 };

@@ -13,7 +13,7 @@ namespace Xaba {
 		void LogMessage(const std::string& message);
 		std::mutex _lock;
 	public:
-		RollingFileLogger(const  std::string& fileNameWithoutExtension);
+		RollingFileLogger(const std::string& fileNameWithoutExtension);
 	
 		void Info(const std::string& message) override;
 		void Error(const std::string& message) override;

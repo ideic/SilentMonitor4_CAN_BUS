@@ -10,9 +10,11 @@ class CANBUSCommunicator
 	std::shared_ptr<ConfigurationManager> _configuraionManager;
 	std::shared_ptr<TCPClient> _tcpClient;
 	std::unique_ptr<ELM327Communicator> _elm327;
-	RollingFileLogger _dataLogger;
+	std::unique_ptr<RollingFileLogger> _dataLogger;
+	bool _connected{ false };
+	void Connect();
 public:
 	CANBUSCommunicator(std::shared_ptr<ConfigurationManager> configManager);
-	void Fetch();
+	bool Fetch();
 };
 
